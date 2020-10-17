@@ -9,7 +9,7 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="~/.oh-my-zsh"
+export ZSH="${XDG_CACHE_HOME:-$HOME/}.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -77,7 +77,7 @@ HIST_STAMPS="dd/mm/yyyy"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git tmux)
 
-ZSH_DISABLE_COMPFIX=true
+# ZSH_DISABLE_COMPFIX=true
 
 source $ZSH/oh-my-zsh.sh
 
@@ -106,6 +106,10 @@ alias ls="exa"
 alias lst="exa --git-ignore -T"
 alias v="nvim"
 alias vim="nvim"
+alias ya="yadm add"
+alias ycmsg="yadm commit -m"
+alias yp="yadm push"
+alias yl="yadm pull"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
@@ -118,10 +122,9 @@ export PATH=/usr/local/texlive/2020/bin/x86_64-linux:$PATH
 export SDKMAN_DIR="/home/yousof/.sdkman"
 [[ -s "/home/yousof/.sdkman/bin/sdkman-init.sh" ]] && source "/home/yousof/.sdkman/bin/sdkman-init.sh"
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
