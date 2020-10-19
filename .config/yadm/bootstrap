@@ -26,7 +26,7 @@ while sshC == 1 :
         mail = input( "What is your mail to be added to the end of the ssh key?: ")
 
     fileName = input("What to name the file?: ")
-    subprocess.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", '"~/.ssh/{fileName}"',"-N", '""', "-C", f'"{mail}"'])
+    subprocess.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", f'~/.ssh/{fileName}',"-N", '""', "-C", f'{mail}'])
 
     answer = input("add another key? y/n: ")
     
@@ -36,7 +36,7 @@ while sshC == 1 :
         sshC = 0
 
 print("Updating the yadm repo origin URL")
-subprocess.run(["yadm", "remote", "set-url", "origin", '"git@github.com:YousofMersal/Dotfiles.git"'])
+subprocess.run(["yadm", "remote", "set-url", "origin", 'git@github.com:YousofMersal/Dotfiles.git'])
 
 print("updating packages...")
 subprocess.run(["sudo", "apt", "update"])
@@ -47,13 +47,13 @@ subprocess.run(["sudo", "apt", "install", "zsh", "neovim", "python3-pip", "build
 subprocess.run(["wget", "-P", "~", "https://git.io/.gdbinit"])
 
 print("installing n/node and sdkman/java 14")
-subprocess.run(["sh", "-c", '"$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"'])
+subprocess.run(["sh", "-c", '$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)'])
 
 print("installing n for node management")
 subprocess.run(["curl", "-L", "https://git.io/n-install", "|", "bash"])
 
 print("installing sdkman")
-subprocess.run(["curl", "-s", '"https://get.sdkman.io"', "|", "bash"])
+subprocess.run(["curl", "-s", "https://get.sdkman.io", "|", "bash"])
 subprocess.run(["sdk", "install", "java", "14.0.2.fx-librca"])
 
 subprocess.run(["git", "clone", "https://github.com/gpakosz/.tmux.git"])
@@ -64,7 +64,7 @@ subprocess.run(["curl", "--proto", "'=https'", "--tlsv1.2 -sSf https://sh.rustup
 
 subprocess.run(["cargo", "install", "exa"])
 
-subprocess.run(["sh", "-c", "curl", "-fLo", '\"${XDG_DATA_HOME:-$HOME/.local/share}\"/nvim/site/autoload/plug.vim', "--create-dirs", "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"])
+subprocess.run(["sh", "-c", "curl", "-fLo", '"${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim', "--create-dirs", "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"])
 
 subprocess.run(["yadm", "pull", "origin", "master"])
 
