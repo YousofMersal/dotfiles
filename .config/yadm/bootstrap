@@ -6,7 +6,7 @@ import os
 sshC = input("Add ssh key(s)? y/n: ")
 mail = ""
 
-setGit = input("set git variables?")
+setGit = input("set git variables?: ")
 
 if setGit == "y" or setGit == "yes":
     mail = input("what is your mail: ")
