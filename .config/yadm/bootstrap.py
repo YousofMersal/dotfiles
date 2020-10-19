@@ -1,6 +1,7 @@
+#!/usr/bin/env python3
 import subprocess
 import os
-subprocess.run(f'{os.environ.get("HOME")}')
+subprocess.run(f'cd {os.environ.get("HOME")}')
 
 # Generate s
 sshC = input("Add ssh key(s)? y/n: ")
@@ -44,7 +45,7 @@ subprocess.run("sudo apt update && sudo apt dist-upgrade -y")
 
 print("installing all packages in one go")
 subprocess.run("sudo apt install zsh neovim python3-pip build essential gdb ripgrep -y")
-subprocess("wget -P ~ https://git.io/.gdbinit")
+subprocess.run("wget -P ~ https://git.io/.gdbinit")
 
 print("installing n/node and sdkman/java 14")
 subprocess.run('sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')
