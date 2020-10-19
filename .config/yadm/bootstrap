@@ -20,20 +20,22 @@ else:
     sshC = 0
 
 while sshC == 1 :
-
-    if  mail == "":
-
-        mail = input( "What is your mail to be added to the end of the ssh key?: ")
-
-    fileName = input("What to name the file?: ")
-    subprocess.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", f'~/.ssh/{fileName}',"-N", '""', "-C", f'{mail}'])
-
-    answer = input("add another key? y/n: ")
+    if os.path.exists("~/.ssh"):
+        if  mail == "":
     
-    if answer == "y" or answer == "yes":
-        sshC = 1 
+            mail = input( "What is your mail to be added to the end of the ssh key?: ")
+
+        fileName = input("What to name the file?: ")
+        subprocess.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", f'~/.ssh/{fileName}',"-N", '""', "-C", f'{mail}'])
+
+        answer = input("add another key? y/n: ")
+    
+        if answer == "y" or answer == "yes":
+            sshC = 1 
+        else:
+            sshC = 0
     else:
-        sshC = 0
+        subprocess.run(["mkdir", "~/.ssh"])
 
 print("Updating the yadm repo origin URL")
 subprocess.run(["yadm", "remote", "set-url", "origin", 'git@github.com:YousofMersal/Dotfiles.git'])
