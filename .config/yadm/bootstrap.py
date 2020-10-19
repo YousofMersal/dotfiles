@@ -11,8 +11,8 @@ setGit = input("set git variables?")
 if setGit == "y" or setGit == "yes":
     mail = input("what is your mail: ")
     name = input("What is your name?: ")
-    subprocess.run('git config --global user.name "{name}"')
-    subprocess.run('git config --global user.email "{mail}"')
+    subprocess.run(f'git config --global user.name "{name}"')
+    subprocess.run(f'git config --global user.email "{mail}"')
 
 if sshC == "y" or sshC == "yes":
     sshC = 1
