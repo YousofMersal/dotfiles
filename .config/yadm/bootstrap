@@ -6,7 +6,7 @@ import os
 sshC = input("Add ssh key(s)? y/n: ")
 mail = ""
 
-setGit = input("set git variables?: ")
+setGit = input("set git variables? (y/n): ")
 
 if setGit == "y" or setGit == "yes":
     mail = input("what is your mail: ")
@@ -26,7 +26,7 @@ while sshC == 1 :
         mail = input( "What is your mail to be added to the end of the ssh key?: ")
 
     fileName = input("What to name the file?: ")
-    subprocess.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", f'"{os.environ.get("HOME")}/.ssh/{fileName}"', "-C", f'"{mail}"'])
+    subprocess.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", '"~/.ssh/{fileName}"',"-N", '""', "-C", f'"{mail}"'])
 
     answer = input("add another key? y/n: ")
     
