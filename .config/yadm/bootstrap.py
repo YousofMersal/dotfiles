@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import subprocess
 import os
-subprocess.run(f'cd {os.environ.get("HOME")}')
 
 # Generate s
 sshC = input("Add ssh key(s)? y/n: ")
@@ -57,9 +56,9 @@ print("installing sdkman")
 subprocess.run('curl -s "https://get.sdkman.io" | bash')
 subprocess.run('sdk install java 14.0.2.fx-librca')
 
-subprocess.run('git clone https://github.com/gpakosz/.tmux.git')
-subprocess.run('ln -s -f .tmux/.tmux.conf')
-subprocess.run('cp .tmux/.tmux.conf.local .')
+subprocess.run('git clone https://github.com/gpakosz/.tmux.git {os.environ.get("HOME")}')
+subprocess.run('ln -s -f {os.environ.get("HOME")}/.tmux/.tmux.conf')
+subprocess.run('cp {os.environ.get("HOME")}/.tmux/.tmux.conf.local {os.environ.get("HOME")}')
 
 subprocess.run("curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh")
 
