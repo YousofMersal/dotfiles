@@ -27,7 +27,7 @@ while sshC == 1 :
             mail = input( "What is your mail to be added to the end of the ssh key?: ")
 
         fileName = input("What to name the file?: ")
-        subprocess.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", f'~/.ssh/{fileName}',"-N", '""', "-C", f'{mail}'])
+        subprocess.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", f'{Path.home()}/.ssh/{fileName}',"-N", '""', "-C", f'{mail}'])
 
         answer = input("add another key? y/n: ")
     
@@ -47,7 +47,7 @@ subprocess.run(["sudo", "apt", "dist-upgrade"])
 
 print("installing all packages in one go")
 subprocess.run(["sudo", "apt", "install", "zsh", "neovim", "python3-pip", "build-essential", "gdb", "ripgrep", "-y"]) 
-subprocess.run(["wget", "-P", "~", "https://git.io/.gdbinit"])
+subprocess.run(["wget", "-P", f'{Path.home()}', "https://git.io/.gdbinit"])
 
 print("installing n/node and sdkman/java 14")
 subprocess.run(["sh", "-c", '$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)'])
