@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from pathlib import Path
 import subprocess
 import os
 
@@ -20,7 +21,7 @@ else:
     sshC = 0
 
 while sshC == 1 :
-    if os.path.exists("~/.ssh"):
+    if os.path.exists(f'{Path.home()}/.ssh'):
         if  mail == "":
     
             mail = input( "What is your mail to be added to the end of the ssh key?: ")
@@ -35,7 +36,7 @@ while sshC == 1 :
         else:
             sshC = 0
     else:
-        subprocess.run(["mkdir", "~/.ssh"])
+        subprocess.run(["mkdir", f'{Path.home()}/.ssh'])
 
 print("Updating the yadm repo origin URL")
 subprocess.run(["yadm", "remote", "set-url", "origin", 'git@github.com:YousofMersal/Dotfiles.git'])
