@@ -43,7 +43,7 @@ subprocess.run(["yadm", "remote", "set-url", "origin", 'git@github.com:YousofMer
 
 print("updating packages...")
 subprocess.run(["sudo", "apt", "update"])
-subprocess.run(["sudo", "apt", "dist-upgrade"])
+subprocess.run(["sudo", "apt", "dist-upgrade", "-y"])
 
 print("installing all packages in one go")
 subprocess.run(["sudo", "apt", "install", "zsh", "neovim", "python3-pip", "build-essential", "gdb", "ripgrep", "-y"]) 
@@ -53,17 +53,21 @@ print("installing n/node and sdkman/java 14")
 subprocess.run(["sh", "-c", '$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)'])
 
 print("installing n for node management")
-subprocess.run(["curl", "-L", "https://git.io/n-install", "|", "bash"])
+curl = subprocess.Popen(["curl", "-L", "https://git.io/n-install" ], stdout=subprocess.PIPE,)
+subprocess.Popen(["bash"],stdin=curl.stdout,)
 
 print("installing sdkman")
-subprocess.run(["curl", "-s", "https://get.sdkman.io", "|", "bash"])
+curlSDK = subprocess.run(["curl", "-s", "https://get.sdkman.io" ], stdout=subprocess.PIPE,)
+subprocess.Popen(["bash"],stdin=curlSDK.stdout,)
+
 subprocess.run(["sdk", "install", "java", "14.0.2.fx-librca"])
 
 subprocess.run(["git", "clone", "https://github.com/gpakosz/.tmux.git"])
 subprocess.run(["ln", "-s", "-f", ".tmux/.tmux.conf"])
 subprocess.run(["cp", ".tmux/.tmux.conf.local", "."])
 
-subprocess.run(["curl", "--proto", "'=https'", "--tlsv1.2 -sSf https://sh.rustup.rs" "|", "sh"])
+rusty=subprocess.run(["curl", "--proto", "'=https'", "--tlsv1.2 -sSf https://sh.rustup.rs" ], stdout=subprocess.PIPE,)
+subprocess.Popen(["sh"],stdin=rusty.stdout,)
 
 subprocess.run(["cargo", "install", "exa"])
 
