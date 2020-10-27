@@ -76,7 +76,7 @@ HIST_STAMPS="dd/mm/yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git tmux)
-ZSH_TMUX_AUTOSTART=true
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -112,7 +112,7 @@ alias yl="yadm pull"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-
+export PATH=$HOME/.local/bin:$PATH
 
 export PATH=/usr/local/texlive/2020/bin/x86_64-linux:$PATH
 

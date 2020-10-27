@@ -74,11 +74,11 @@ print("installing n/node and sdkman/java 14")
 subprocess.run(["sh", "-c", '$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)'])
 
 print("installing n for node management")
-curl = subprocess.Popen(["curl", "-L", "https://git.io/n-install" ], stdout=subprocess.PIPE,)
+curl = subprocess.Popen(["curl", "-L", "https://git.io/n-install" ], stdout=subprocess.PIPE)
 subprocess.Popen(["bash"],stdin=curl.stdout,)
 
 print("installing sdkman")
-curlSDK = subprocess.run(["curl", "-s", "https://get.sdkman.io" ], stdout=subprocess.PIPE,)
+curlSDK = subprocess.run(["curl", "-s", "https://get.sdkman.io" ], stdout=subprocess.PIPE)
 subprocess.Popen(["bash"],stdin=curlSDK.stdout,)
 
 subprocess.run(["sdk", "install", "java", "14.0.2.fx-librca"])
