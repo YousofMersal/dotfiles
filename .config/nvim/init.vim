@@ -13,7 +13,6 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install', 'for': 'm
 
 Plug 'airblade/vim-gitgutter'
 
-Plug 'ryanoasis/vim-devicons'
 
 Plug 'lervag/vimtex', {'for': 'tex'} 
 
@@ -46,14 +45,12 @@ Plug 'Shirk/vim-gas', { 'for': 's' }
 "rust plugin
 Plug 'rust-lang/rust.vim', {'for': 'rust'}
 
-" Syntastic
 "Plug 'vim-syntastic/syntastic'
 
 Plug 'preservim/nerdtree', { 'on':  'NERDTreeToggle' } |
             \ Plug 'Xuyuanp/nerdtree-git-plugin'
 
-Plug 'codehearts/mascara-vim'
-
+Plug 'ryanoasis/vim-devicons'
 
 " Initialize plugin system
 call plug#end()
@@ -131,7 +128,7 @@ let g:rustfmt_autosave = 1
 let g:markdown_fenced_languages = ['html', 'vim', 'ruby', 'python', 'bash=sh', 'rust', 'haskell', 'c', 'cpp']
 
 set number relativenumber
-
+set encoding=UTF-8
 set noshowcmd
 set clipboard=unnamed
 set expandtab
@@ -192,6 +189,7 @@ endfunction
 
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
+nmap <leader>rn <Plug>(coc-rename)
 
 "=========================
 " === misc plugin setup ==
@@ -211,7 +209,7 @@ let g:vimtex_compiler_latexmk = {
             \}
 
 let g:tex_flavor = 'latex'
-"==============
+"============== 
 "=== python ===
 "==============
 " let g:syntastic_python_checkers = ['pylint']
