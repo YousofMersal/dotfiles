@@ -52,10 +52,12 @@ Plug 'preservim/nerdtree', { 'on':  'NERDTreeToggle' } |
 
 Plug 'ryanoasis/vim-devicons'
 
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 " Initialize plugin system
 call plug#end()
 
 " ----------------------------------------------------------------------------------------
+set guifont=FiraCode\ NF
 
 " =======================
 " == LightLine Config ===
@@ -83,11 +85,6 @@ if (has('nvim'))
     let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
 endif
 
-"   For Neovim > 0.1.5 and Vim > patch 7.4.1799 -
-"   https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162
-"   Based on Vim patch 7.4.1770 (`guicolors` option) -
-"   https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd
-"   https://github.com/neovim/neovim/wiki/Following-HEAD#20160511
 if (has('termguicolors'))
     set termguicolors
 endif
@@ -95,27 +92,6 @@ endif
 let g:material_theme_style = 'darker'
 let g:material_terminal_italics = 1
 colorscheme material
-
-
-" =================
-" === Syntastic ===
-" =================
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
-
-"let g:syntastic_always_populate_loc_list = 1
-"let g:syntastic_auto_loc_list = 1
-"let g:syntastic_check_on_open = 1
-"let g:syntastic_check_on_wq = 0
-"let g:syntastic_error_symbol = "✗"
-"let g:syntastic_warning_symbol = "⚠"
-
-"function! SyntasticCheckHook(errors)
-"    if !empty(a:errors)
-"        let g:syntastic_loc_list_height = min([len(a:errors), 10])
-"    endif
-"endfunction
 
 " ===================
 " === Rust Config ===
@@ -140,13 +116,14 @@ set cmdheight=2
 set updatetime=300
 
 filetype plugin indent on
-syntax on
+" syntax on
 
 " syntax
 au BufRead,BufNewFile *.s set filetype=gas"
 
 "Keybinds
 " Map <ALT>+<hjkl> to move in insert mode 
+nnoremap <C-c> <silent> <C-c>
 map <C-n> :NERDTreeToggle<CR>
 nnoremap <C-K> :update<cr>
 inoremap <C-K> <Esc>:update<cr>gi
@@ -155,6 +132,11 @@ nnoremap td  :tabclose<CR>
 set pastetoggle=<F3>
 
 " coc keymaps
+function! s:cocActionsOpenFromSelected(type) abort
+  execute 'CocCommand actions.open ' . a:type
+endfunction
+xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
+nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
 inoremap <silent><expr> <TAB>
             \ pumvisible() ? "\<C-n>" :
             \ <SID>check_back_space() ? "\<TAB>" :
@@ -194,6 +176,10 @@ nmap <leader>rn <Plug>(coc-rename)
 "=========================
 " === misc plugin setup ==
 " ========================
+let g:webdevicons_enable = 1
+let g:webdevicons_enable_nerdtree = 1
+
+
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
 
@@ -204,12 +190,27 @@ let g:mkdp_auto_close = 1
 "======================
 "=== Latex settings ===
 "======================
-let g:vimtex_compiler_latexmk = {
-            \ 'build_dir' : './build'
-            \}
+    let g:vimtex_compiler_latexmk = {
+        \ 'build_dir' : './build'
+        \}
 
 let g:tex_flavor = 'latex'
 "============== 
 "=== python ===
 "==============
 " let g:syntastic_python_checkers = ['pylint']
+
+if exists("g:loaded_webdevicons")
+  call webdevicons#refresh()
+endif
+"================================
+"=== Spell Checker / texidote ===
+"================================
+let g:vimtex_grammar_textidote = {
+            \ 'jar': '/opt/textidote/textidote.jar',
+            \ 'args': '--check en_UK',
+            \}
+let g:vimtex_grammar_vlty = {
+            \'lt_directory': '/home/yousof/code/latex/LanguageTool-5.1',
+            \ 'server': 'my',
+            \}
