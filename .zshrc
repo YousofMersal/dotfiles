@@ -113,6 +113,7 @@ alias ya="yadm add"
 alias ycmsg="yadm commit -m"
 alias yp="yadm push"
 alias yl="yadm pull"
+alias yst="yadm status"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
