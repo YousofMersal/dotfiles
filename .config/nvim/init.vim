@@ -133,7 +133,9 @@ nnoremap td  :tabclose<CR>
 
 set pastetoggle=<F3>
 
-" coc keymaps
+" ====================
+" === coc settings ===
+"=====================
 function! s:cocActionsOpenFromSelected(type) abort
   execute 'CocCommand actions.open ' . a:type
 endfunction
@@ -175,6 +177,14 @@ nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
 nmap <leader>rn <Plug>(coc-rename)
 
+let g:coc_global_extensions = [
+            \ 'coc-actions',
+            \ 'coc-json',
+            \ 'coc-python',
+            \ 'coc-spell-checker',
+            \ 'coc-tsserver',
+            \ 'coc-vimtex'
+            \ ]
 "=========================
 " === misc plugin setup ==
 " ========================

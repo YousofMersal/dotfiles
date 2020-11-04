@@ -1,0 +1,44 @@
+{
+    "coc.preferences.extensionUpdateCheck": "daily",
+    "cSpell.enabledLanguageIds": [
+	"asciidoc",
+	"latex",
+	"markdown",
+	"tex"
+    ],
+    "cSpell.dictionaryDefinitions": [
+	{
+	    "name": "tex",
+	    "path": "~/code/latex/latex.txt"
+	}
+    ],
+    "cSpell.dictionaries": [
+	"tex"
+    ],
+    "cSpell.languageSettings": [
+	{
+	    "languageId":"tex",
+	    "dictionaries": ["tex", "latex"]
+	}
+    ],
+    "cSpell.userWords": [
+	"Mersal",
+	"Yousof",
+	"d'etre"
+    ],
+    "languageserver": {
+	"ccls": {
+	    "command": "ccls",
+	    "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
+	    "rootPatterns": [".ccls-root", "compile_commands.json"],
+	    "initializationOptions": {
+		"cache": {
+		    "directory": ".ccls-cache"
+		},
+		"client": {
+		    "snippetSupport": true
+		}
+	    }
+	}
+    }
+}
