@@ -49,6 +49,8 @@ if [ "$sshAdd" = "y" ]; then
     more_ssh_loop
 fi
 
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
 yadm remote set-url origin "git@github.com:YousofMersal/Dotfiles.git"
 
 sudo apt update 
@@ -66,9 +68,9 @@ ln -s -f ~/.tmux/.tmux.conf
 cp ~/.tmux/.tmux.conf.local .
 
 if [ "$iswsl" = "t" ]; then
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 else
-    curl https://sh.rustup.rs -sSf | sh
+    curl https://sh.rustup.rs -sSf | sh -s -- -y
 fi
 
 cargo install exa
@@ -76,13 +78,13 @@ cargo install exa
 sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
-yadm pull origin master
+yadm pull origin master -f
 
 pip3 install pynvim
 
 pip3 install pygments
 
-nvim --headless -PlugInstall -qall
+nvim --headless +'PlugInstall --sync' +'PlugUpdate' +qa
 
 curl -s "https://get.sdkman.io" | bash
 
@@ -92,6 +94,5 @@ sdk install java 14.0.2.fx-librca
 
 curl -L https://git.io/n-install | bash
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
 chsh -s $(which zsh)
