@@ -1,86 +1,97 @@
-#!/usr/bin/env python3
-from pathlib import Path
-import subprocess
-import os
+#!/bin/bash
 
-# Generate s
-sshC = input("Add ssh key(s)? y/n: ")
-mail = ""
+if grep -q Microsoft /proc/version; then
+    iswsl = "t"
+else
+    iswsl = "f"
+fi
 
-setGit = input("set git variables? (y/n): ")
 
-if setGit == "y" or setGit == "yes":
-    mail = input("what is your mail: ")
-    name = input("What is your name?: ")
-    subprocess.run(["git", "config", "--global", "user.name", f'{name}'])
-    subprocess.run(["git", "config", "--global", "user.email", f'{mail}'])
+read -p "Set git configs? y/n: " gitConf
 
-if sshC == "y" or sshC == "yes":
-    sshC = 1
-else:
-    sshC = 0
+if [ "$gitConf" = "y" ]; then
+    read -p "What's your name?: " name
+    read -p "What's your mail?: " mail
+    git config --global user.name "$name"
+    git config --global user.email "$mail"
+fi
 
-while sshC == 1 :
-    if os.path.exists(f'{Path.home()}/.ssh'):
-        if  mail == "":
-    
-            mail = input( "What is your mail to be added to the end of the ssh key?: ")
+read -p "Add ssh keys?: " sshAdd
 
-        fileName = input("What to name the file?: ")
-        subprocess.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", f'{Path.home()}/.ssh/{fileName}',"-N", '""', "-C", f'{mail}'])
+more_ssh_loop() {
+    while true
+    do
+	read -r -p 'Add more ssh key(s)? ' choice
+	case "$choice" in
+	    n|N) break;;
+	    y|Y)
+		read -p "What should the file be called?: " name
+		ssh-keygen -t rsa -b 4096 -q -f "$HOME/.ssh/$name" -N "" -C "$mail"
+		;;
+	    *) echo 'Response not valid';;
+	esac
+    done
+}
 
-        answer = input("add another key? y/n: ")
-    
-        if answer == "y" or answer == "yes":
-            sshC = 1 
-        else:
-            sshC = 0
-    else:
-        subprocess.run(["mkdir", f'{Path.home()}/.ssh'])
+if [ "$sshAdd" = "y" ]; then
+    if [ ! -d "$HOME/.ssh" ]; then
+	mkdir $HOME/.ssh
+    fi
 
-print("Updating the yadm repo origin URL")
-subprocess.run(["yadm", "remote", "set-url", "origin", 'git@github.com:YousofMersal/Dotfiles.git'])
+    if [ "$gitConf" = "y" ]; then
+	read -p "What should the file be called?: " name
+	ssh-keygen -t rsa -b 4096 -q -f "$HOME/.ssh/$name" -N "" -C "$mail"
+    else
+	read -p "What should the file be called?: " name
+	read -p "What's your mail?: " mail
+	ssh-keygen -t rsa -b 4096 -q -f "$HOME/.ssh/$name" -N "" -C "$mail"
+    fi
+    more_ssh_loop
+fi
 
-print("updating packages...")
-subprocess.run(["sudo", "apt", "update"])
-subprocess.run(["sudo", "apt", "dist-upgrade", "-y"])
+yadm remote set-url origin "git@github.com:YousofMersal/Dotfiles.git"
 
-print("installing all packages in one go")
-subprocess.run(["sudo", "apt", "install", "zsh", "neovim", "python3-pip", "build-essential", "gdb", "ripgrep", "-y"]) 
-subprocess.run(["wget", "-P", f'{Path.home()}', "https://git.io/.gdbinit"])
+sudo apt update 
 
-print("installing tmux skin")
-subprocess.run(["git", "clone", "https://github.com/gpakosz/.tmux.git"])
-subprocess.run(["ln", "-s", "-f", ".tmux/.tmux.conf"])
-subprocess.run(["cp", ".tmux/.tmux.conf.local", "."])
+sudo apt dist-upgraade -y
 
-print("installing rust")
-rusty=subprocess.run(["curl", "--proto", "'=https'", "--tlsv1.2 -sSf https://sh.rustup.rs" ], stdout=subprocess.PIPE,)
-subprocess.Popen(["sh"],stdin=rusty.stdout,)
+sudo apt install zsh neovim python3-pip build-essential gdb ripgrep -y
 
-subprocess.run(["cargo", "install", "exa"])
+wget -P ~ https://git.io/.gdbinit
 
-subprocess.run(["sh", "-c", "curl", "-fLo", '"${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim', "--create-dirs", "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"])
+git clone https://github.com/gpakosz/.tmux.git
 
-subprocess.run(["yadm", "pull", "origin", "master"])
+ln -s -f ~/.tmux/.tmux.conf 
 
-subprocess.run(["pip3", "install", "pynvim"])
+cp ~/.tmux/.tmux.conf.local .
 
-subprocess.run(["pip3", "install", "pygments"])
+if [ "$iswsl" = "t" ]; then
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+else
+    curl https://sh.rustup.rs -sSf | sh
+fi
 
-subprocess.run(["nvim", "--headless", "+PlugInstall", "+qall"])
+cargo install exa
 
-print("installing n/node and sdkman/java 14")
-subprocess.run(["sh", "-c", '$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)'])
+sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
-print("installing n for node management")
-curl = subprocess.Popen(["curl", "-L", "https://git.io/n-install" ], stdout=subprocess.PIPE)
-subprocess.Popen(["bash"],stdin=curl.stdout,)
+yadm pull origin master
 
-print("installing sdkman")
-curlSDK = subprocess.run(["curl", "-s", "https://get.sdkman.io" ], stdout=subprocess.PIPE)
-subprocess.Popen(["bash"],stdin=curlSDK.stdout,)
+pip3 install pynvim
 
-subprocess.run(["sdk", "install", "java", "14.0.2.fx-librca"])
+pip3 install pygments
 
-print("Set up script is done!")
+nvim --headless -PlugInstall -qall
+
+curl -s "https://get.sdkman.io" | bash
+
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+sdk install java 14.0.2.fx-librca
+
+curl -L https://git.io/n-install | bash
+
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+chsh -s $(which zsh)
