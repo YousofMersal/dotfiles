@@ -55,7 +55,7 @@ yadm remote set-url origin "git@github.com:YousofMersal/Dotfiles.git"
 
 sudo apt update 
 
-sudo apt dist-upgraade -y
+sudo apt dist-upgrade -y
 
 sudo apt install zsh neovim python3-pip build-essential gdb ripgrep -y
 
