@@ -7,6 +7,8 @@
 " - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
 
+Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+
 Plug 'vim-scripts/c.vim'
 
 Plug 'tpope/vim-dispatch'
@@ -15,6 +17,7 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install', 'for': 'm
 
 Plug 'airblade/vim-gitgutter'
 
+Plug 'ap/vim-css-color', { 'for': 'css'}
 
 Plug 'lervag/vimtex', {'for': 'tex'} 
 
@@ -116,6 +119,7 @@ set nocursorline
 set hidden
 set cmdheight=2
 set updatetime=300
+set encoding=utf-8
 
 filetype plugin indent on
 " syntax on
@@ -124,7 +128,15 @@ filetype plugin indent on
 au BufRead,BufNewFile *.s set filetype=gas"
 
 "Keybinds
-" Map <ALT>+<hjkl> to move in insert mode 
+" Toggle terminal on/off (neovim)
+nnoremap <A-t> :call TermToggle(12)<CR>
+inoremap <A-t> <Esc>:call TermToggle(12)<CR>
+tnoremap <A-t> <C-\><C-n>:call TermToggle(12)<CR>
+
+" Terminal go back to normal mode
+tnoremap <Esc> <C-\><C-n>
+tnoremap :q! <C-\><C-n>:q!<CR>
+
 nnoremap <C-c> <silent> <C-c>
 map <C-n> :NERDTreeToggle<CR>
 nnoremap <C-K> :update<cr>
@@ -183,7 +195,8 @@ let g:coc_global_extensions = [
             \ 'coc-python',
             \ 'coc-spell-checker',
             \ 'coc-tsserver',
-            \ 'coc-vimtex'
+            \ 'coc-vimtex',
+            \ 'coc-java'
             \ ]
 "=========================
 " === misc plugin setup ==
@@ -226,3 +239,29 @@ let g:vimtex_grammar_vlty = {
             \'lt_directory': '/home/yousof/code/latex/LanguageTool-5.1',
             \ 'server': 'my',
             \}
+
+"================
+"=== terminal ===
+"================
+let g:term_buf = 0
+let g:term_win = 0
+function! TermToggle(height)
+    if win_gotoid(g:term_win)
+        hide
+    else
+        botright new
+        exec "resize " . a:height
+        try
+            exec "buffer " . g:term_buf
+        catch
+            call termopen($SHELL, {"detach": 0})
+            let g:term_buf = bufnr("")
+            set nonumber
+            set norelativenumber
+            set signcolumn=no
+        endtry
+        startinsert!
+        let g:term_win = win_getid()
+    endif
+endfunction
+
