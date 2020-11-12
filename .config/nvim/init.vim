@@ -117,7 +117,7 @@ set shiftwidth=4
 set nowrap
 set nocursorline
 set hidden
-set cmdheight=2
+set cmdheight=1
 set updatetime=300
 set encoding=utf-8
 
@@ -151,8 +151,10 @@ set pastetoggle=<F3>
 function! s:cocActionsOpenFromSelected(type) abort
   execute 'CocCommand actions.open ' . a:type
 endfunction
+
 xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
 nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
+
 inoremap <silent><expr> <TAB>
             \ pumvisible() ? "\<C-n>" :
             \ <SID>check_back_space() ? "\<TAB>" :
@@ -198,6 +200,20 @@ let g:coc_global_extensions = [
             \ 'coc-vimtex',
             \ 'coc-java'
             \ ]
+
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
 "=========================
 " === misc plugin setup ==
 " ========================
