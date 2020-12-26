@@ -1,4 +1,8 @@
 {
+    "cSpellExt.enableDictionaries": [
+        "danish"
+    ],
+    "cSpell.language": "en,dk",
     "coc.preferences.extensionUpdateCheck": "daily",
     "cSpell.enabledLanguageIds": [
 	"asciidoc",
