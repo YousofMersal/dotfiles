@@ -7,9 +7,9 @@
 " - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
 
-Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
+Plug 'numirias/semshi', {'for': 'pytohn', 'do': ':UpdateRemotePlugins'}
 
-Plug 'vim-scripts/c.vim'
+Plug 'vim-scripts/c.vim', { 'for': 'c'}
 
 Plug 'tpope/vim-dispatch'
 
@@ -122,7 +122,7 @@ set updatetime=300
 set encoding=utf-8
 
 filetype plugin indent on
-" syntax on
+syntax enable
 
 " syntax
 au BufRead,BufNewFile *.s set filetype=gas"
@@ -136,6 +136,10 @@ nnoremap <A-t> :call TermToggle(12)<CR>
 inoremap <A-t> <Esc>:call TermToggle(12)<CR>
 tnoremap <A-t> <C-\><C-n>:call TermToggle(12)<CR>
 
+" Ctrl+h to stop searching
+vnoremap <C-h> :nohlsearch<cr>
+nnoremap <C-h> :nohlsearch<cr>
+
 " Terminal go back to normal mode
 tnoremap <Esc> <C-\><C-n>
 tnoremap :q! <C-\><C-n>:q!<CR>
@@ -145,6 +149,10 @@ map <C-n> :NERDTreeToggle<CR>
 nnoremap <C-K> :update<cr>
 inoremap <C-K> <Esc>:update<cr>gi
 nnoremap td  :tabclose<CR>
+
+" Jump to start and end of line using the home row keys
+map H ^
+map L $
 
 set pastetoggle=<F3>
 
@@ -201,7 +209,8 @@ let g:coc_global_extensions = [
             \ 'coc-spell-checker',
             \ 'coc-tsserver',
             \ 'coc-vimtex',
-            \ 'coc-java'
+            \ 'coc-java',
+            \ 'coc-rls'
             \ ]
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
@@ -230,6 +239,7 @@ function! s:show_documentation()
     execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
+
 "=========================
 " === misc plugin setup ==
 " ========================
@@ -244,6 +254,7 @@ let g:UltiSnipsExpandTrigger = '<f5>'
 
 let g:mkdp_auto_start = 1
 let g:mkdp_auto_close = 1
+
 "======================
 "=== Latex settings ===
 "======================
@@ -252,6 +263,7 @@ let g:mkdp_auto_close = 1
         \}
 
 let g:tex_flavor = 'latex'
+
 "============== 
 "=== python ===
 "==============
@@ -260,6 +272,7 @@ let g:tex_flavor = 'latex'
 if exists("g:loaded_webdevicons")
   call webdevicons#refresh()
 endif
+
 "================================
 "=== Spell Checker / texidote ===
 "================================
@@ -297,3 +310,6 @@ function! TermToggle(height)
     endif
 endfunction
 
+" Sane splits
+set splitright
+set splitbelow
