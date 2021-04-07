@@ -121,6 +121,9 @@ alias ycmsg="yadm commit -m"
 alias yp="yadm push"
 alias yl="yadm pull"
 alias yst="yadm status"
+alias clip="xclip -selection clipboard"
+alias clipv="xclip -selection clipboard -o"
+alias timeit="hyperfine"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
@@ -138,3 +141,4 @@ export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PR
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[ -f "/home/yousof/.ghcup/env" ] && source "/home/yousof/.ghcup/env" # ghcup-env

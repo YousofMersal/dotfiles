@@ -7,6 +7,8 @@
 " - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugged')
 
+Plug 'justinmk/vim-sneak'
+
 Plug 'numirias/semshi', {'for': 'pytohn', 'do': ':UpdateRemotePlugins'}
 
 Plug 'vim-scripts/c.vim', { 'for': 'c'}
@@ -47,10 +49,22 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " AT&T assembly syntax highlightning
 Plug 'Shirk/vim-gas', { 'for': 's' } 
 
-"rust plugin
-Plug 'rust-lang/rust.vim', {'for': 'rust'}
+" Haskell
+Plug 'autozimu/LanguageClient-neovim', {
+    \ 'branch': 'next',
+    \ 'do': 'bash install.sh'
+    \ }
 
-"Plug 'vim-syntastic/syntastic'
+"rust plugin
+Plug 'rust-lang/rust.vim', {'for': 'rs'}
+Plug 'cespare/vim-toml'
+Plug 'stephpy/vim-yaml'
+Plug 'rhysd/vim-clang-format'
+
+"C++ plugins
+Plug 'jackguo380/vim-lsp-cxx-highlight'
+Plug 'vim-syntastic/syntastic'
+Plug 'rhysd/vim-clang-format'
 
 Plug 'preservim/nerdtree', { 'on':  'NERDTreeToggle' } |
             \ Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -102,12 +116,32 @@ colorscheme material
 " === Rust Config ===
 " ===================
 let g:rustfmt_autosave = 1
+let g:rustfmt_emit_files = 1
+let g:rustfmt_fail_silently = 0
+let g:rustfmt_clup_command = 'clip - selection clipboard'
+
+" ==================
+" === C++ Config ===
+" ==================
+let g:cpp_class_scope_highlight = 1
+let g:cpp_member_variable_highlight = 1
+let g:cpp_class_decl_highlight = 1
+let g:syntastic_cpp_checkers = ['cpplint']
+let g:syntastic_c_checkers = ['cpplint']
+let g:syntastic_cpp_cpplint_exec = 'cpplint'
+" The following two lines are optional. Configure it to your liking!
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+nnoremap <Leader>f :<C-u>ClangFormat<CR>
 
 " ===========================
 " === General Nvim config ===
 " ===========================
 let g:markdown_fenced_languages = ['html', 'vim', 'ruby', 'python', 'bash=sh', 'rust', 'haskell', 'c', 'cpp']
 
+set autoindent
+set timeoutlen=300
+set encoding=utf-8
 set number relativenumber
 set encoding=UTF-8
 set noshowcmd
@@ -120,9 +154,23 @@ set hidden
 set cmdheight=1
 set updatetime=300
 set encoding=utf-8
+let g:sneak#s_next = 1
+
+" Sane splits
+set splitright
+set splitbelow
+
+" Proper search
+set incsearch
+set ignorecase
+set smartcase
+set gdefault
 
 filetype plugin indent on
 syntax enable
+
+"Leave paste mode when leaving insert mode
+autocmd InsertLeave * set nopaste
 
 " syntax
 au BufRead,BufNewFile *.s set filetype=gas"
@@ -163,8 +211,10 @@ function! s:cocActionsOpenFromSelected(type) abort
   execute 'CocCommand actions.open ' . a:type
 endfunction
 
-xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
-nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
+"xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
+"nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
+vmap <leader>a <Plug>(coc-codeaction-selected)
+nmap <leader>a <Plug>(coc-codeaction-selected)
 
 inoremap <silent><expr> <TAB>
             \ pumvisible() ? "\<C-n>" :
@@ -210,21 +260,32 @@ let g:coc_global_extensions = [
             \ 'coc-tsserver',
             \ 'coc-vimtex',
             \ 'coc-java',
-            \ 'coc-rls'
+            \ 'coc-rls',
+            \ 'coc-rust-analyzer'
             \ ]
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
-" Note coc#float#scroll works on neovim >= 0.4.0 or vim >= 8.2.0750
-nnoremap <nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-nnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-inoremap <nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-inoremap <nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
 
 " NeoVim-only mapping for visual mode scroll
 " Useful on signatureHelp after jump placeholder of snippet expansion
 if has('nvim')
   vnoremap <nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#nvim_scroll(1, 1) : "\<C-f>"
   vnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#nvim_scroll(0, 1) : "\<C-b>"
+endif
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
 " Use K to show documentation in preview window.
@@ -263,6 +324,7 @@ let g:mkdp_auto_close = 1
         \}
 
 let g:tex_flavor = 'latex'
+autocmd BufRead *.tex set filetype=tex
 
 "============== 
 "=== python ===
@@ -310,6 +372,3 @@ function! TermToggle(height)
     endif
 endfunction
 
-" Sane splits
-set splitright
-set splitbelow

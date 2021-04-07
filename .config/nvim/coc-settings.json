@@ -30,21 +30,50 @@
       "Mersal",
       "Yousof",
       "d'etre",
-      "graphicx"
+      "graphicx",
+      "interproccess"
     ],
+    "clangd.path": "/home/yousof/.config/coc/extensions/coc-clangd-data/install/11.0.0/clangd_11.0.0/bin/clangd",
     "languageserver": {
-	"ccls": {
-	    "command": "ccls",
-	    "filetypes": ["c", "cpp", "cuda", "objc", "objcpp"],
-	    "rootPatterns": [".ccls-root", "compile_commands.json"],
-	    "initializationOptions": {
-		"cache": {
-		    "directory": ".ccls-cache"
-		},
-		"client": {
-		    "snippetSupport": true
-		}
-	    }
-	}
+        "ccls": {
+            "command": "ccls",
+            "args": ["--log-file=/tmp/ccls.log", "-v=1"],
+            "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"],
+            "rootPatterns": [".ccls", "compile_commands.json"],
+            "initializationOptions": {
+                "cache": {
+                    "directory": "/tmp/ccls"
+                },
+                "client": {
+                    "snippetSupport": true
+                },
+                "index": {
+                    "onChange": true
+                },
+                "highlight": {
+                    "lsRanges": true
+                }
+            }
+        },
+        "haskell": {
+            "command": "haskell-language-server-wrapper",
+            "args": [
+                "--lsp"
+            ],
+            "rootPatterns": [
+                "*.cabal",
+                "stack.yaml",
+                "cabal.project",
+                "BUILD.bazel",
+                "cabal.config",
+                "package.yaml",
+                "hie.yaml"
+            ],
+            "filetypes": [
+                "hs",
+                "lhs",
+                "haskell"
+            ]
+        }
     }
 }
