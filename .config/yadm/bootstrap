@@ -63,10 +63,10 @@ sp.run(packageManagerCommand + packagedToInstall)
 sp.run(["wget", "-P", "~", "https://hit.io/.gdbinit"])
 
 if not isWSL:
-    it = sp.Popen(["curl", "--proto", "'=https'", "--tlsv1.2", "-sSF", "https://sh.rustup.rs",],stdout=sp.PIPE)
+    it = sp.Popen(["curl", "--proto", "'=https'", "--tlsv1.2", "-sSf", "https://sh.rustup.rs",],stdout=sp.PIPE)
     sp.run(["sh", "-s", "--", "-y"], stdin=it.stdout)
 else:
-    it = sp.Popen(["curl", "https://sh.rustup.rs", "-sSF"], stdout=sp.PIPE)
+    it = sp.Popen(["curl", "https://sh.rustup.rs", "-sSf"], stdout=sp.PIPE)
     sp.run(["sh", "-s", "--", "-y"], stdin=it.stdout)
 
 sp.run(["cargo", "install", "exa"])
