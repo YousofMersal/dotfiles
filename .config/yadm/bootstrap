@@ -11,19 +11,21 @@ osResult = sp.run(["grep", "ID_LIKE="], stdin=osInfo.stdout, stdout=sp.PIPE)
 distro = osResult.stdout.decode("utf-8").strip().replace("ID_LIKE=", "")
 packageManagerCommand = [] 
 
-packagedToInstall = ["zsh", "neovim", "python3-pip", "gbd", "ripgrep", "zip", "hyperfine", "cmake", "lutris", "ccls", "-y"]
+packagedToInstall = ["zsh", "neovim", "python3-pip", "gdb", "ripgrep", "zip", "cmake", "ccls", "-y"]
 
 if distro == "arch":
     packageManagerCommand = ["packman", "-S"]
     sp.run(["sudo", "pacman", "-Syu"])
     sp.run(["yay", "-Syu", "yadm-git", "-y"])
-    sp.run(["sudo", "pacman", "-S", "python-pip"])
+    sp.run(["sudo", "pacman", "-S", "python-pip", "hyperfine", "lutris"])
 elif distro == "debian":
     packageManagerCommand = ["sudo", "apt", "install"]
     sp.run(["sudo", "apt", "update", "-y"])
     sp.run(["sudo", "apt", "upgrade", "-y"])
     sp.run(["sudo", "apt", "install", "yadm", "-y"])
     sp.run(["sudo", "apt", "install", "python3-pip", "-y"])
+    sp.run(["wget", "https://github.com/sharkdp/hyperfine/releases/download/v1.11.0/hyperfine_1.11.0_amd64.deb"])
+    sp.run(["sudo", "dpkg", "-i", "hyperfine_1.11.0_amd64.deb"])
 else:
     sys.exit()
 
