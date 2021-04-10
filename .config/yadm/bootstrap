@@ -62,7 +62,7 @@ if addKey.lower() in ("y", "yes"):
 sp.run(packageManagerCommand + packagedToInstall)
 sp.run(["wget", "-P", "~", "https://hit.io/.gdbinit"])
 
-if isWSL:
+if not isWSL:
     it = sp.Popen(["curl", "--proto", "'=https'", "--tlsv1.2", "-sSF", "https://sh.rustup.rs",],stdout=sp.PIPE)
     sp.run(["sh", "-s", "--", "-y"], stdin=it.stdout)
 else:
