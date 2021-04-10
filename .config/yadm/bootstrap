@@ -19,7 +19,7 @@ if distro == "arch":
     sp.run(["yay", "-Syu", "yadm-git", "-y"])
     sp.run(["sudo", "pacman", "-S", "python-pip"])
 elif distro == "debian":
-    packageManagerCommand = ["apt", "install"]
+    packageManagerCommand = ["sudo", "apt", "install"]
     sp.run(["sudo", "apt", "update", "-y"])
     sp.run(["sudo", "apt", "upgrade", "-y"])
     sp.run(["sudo", "apt", "install", "yadm", "-y"])
