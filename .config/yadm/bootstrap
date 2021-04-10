@@ -8,28 +8,26 @@ mail = ""
 # Identify Distro
 osInfo = sp.Popen(["cat", "/etc/os-release"], stdout=sp.PIPE, stderr=sp.PIPE)
 osResult = sp.run(["grep", "ID_LIKE="], stdin=osInfo.stdout, stdout=sp.PIPE)
-os = osResult.stdout.decode("utf-8").strip().replace("ID_LIKE=", "")
+distro = osResult.stdout.decode("utf-8").strip().replace("ID_LIKE=", "")
 packageManagerCommand = [] 
 
-packagedToInstall = ["zsh", "neovim", "python3-pip", "gbd", "ripgrep", "zip", "hyperfine", "cmake", "lutris", "ccls"]
+packagedToInstall = ["zsh", "neovim", "python3-pip", "gbd", "ripgrep", "zip", "hyperfine", "cmake", "lutris", "ccls", "-y"]
 
-if os == "arch":
+if distro == "arch":
     packageManagerCommand = ["packman", "-S"]
     sp.run(["sudo", "pacman", "-Syu"])
     sp.run(["yay", "-Syu", "yadm-git", "-y"])
-elif os == "debian":
+elif distro == "debian":
     packageManagerCommand = ["apt", "install"]
-    sp.run(["sudo", "apt", "update"])
-    sp.run(["sudo", "apt", "upgrade"])
-    sp.run(["sudo", "apt", "install", "yadm"])
+    sp.run(["sudo", "apt", "update", "-y"])
+    sp.run(["sudo", "apt", "upgrade", "-y"])
+    sp.run(["sudo", "apt", "install", "yadm", "-y"])
 else:
     sys.exit()
 
 def addSSHKey(mail):
     fileName = input("What should the file be called? :")
-    keyres = sp.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", os.environ.get("HOME") + "/.ssh/" + fileName, "-N", "\"\"", "-C","\"" + mail + "\""], stdout=sp.PIPE, stderr=sp.PIPE)
-    print(keyres.stderr.decode("utf-8") )
-    print(keyres.stdout.decode("utf-8") )
+    sp.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", os.environ.get("HOME") + "/.ssh/" + fileName, "-N", "\"\"", "-C","\"" + mail + "\""])
 
 isWSL = False
 test = sp.run(["grep", "Microsoft", "/proc/version"], stdout=sp.PIPE, stderr=sp.PIPE)
