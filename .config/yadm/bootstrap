@@ -1,97 +1,102 @@
-#!/bin/bash
+#!/usr/bin/env python3
+import os
+import subprocess as sp
+import sys
 
-if grep -q Microsoft /proc/version; then
-    iswsl = "t"
-else
-    iswsl = "f"
-fi
+mail = ""
+
+# Identify Distro
+osInfo = sp.Popen(["cat", "/etc/os-release"], stdout=sp.PIPE, stderr=sp.PIPE)
+osResult = sp.run(["grep", "ID_LIKE="], stdin=osInfo.stdout, stdout=sp.PIPE)
+os = osResult.stdout.decode("utf-8").strip().replace("ID_LIKE=", "")
+packageManagerCommand = [] 
+
+packagedToInstall = ["zsh", "neovim", "python3-pip", "gbd", "ripgrep", "zip", "hyperfine", "cmake", "lutris", "ccls"]
+
+if os == "arch":
+    packageManagerCommand = ["packman", "-S"]
+    sp.run(["sudo", "pacman", "-Syu"])
+    sp.run(["yay", "-Syu", "yadm-git", "-y"])
+elif os == "debian":
+    packageManagerCommand = ["apt", "install"]
+    sp.run(["sudo", "apt", "update"])
+    sp.run(["sudo", "apt", "upgrade"])
+    sp.run(["sudo", "apt", "install", "yadm"])
+else:
+    sys.exit()
+
+def addSSHKey(mail):
+    fileName = input("What should the file be called? :")
+    keyres = sp.run(["ssh-keygen", "-t", "rsa", "-b", "4096", "-q", "-f", os.environ.get("HOME") + "/.ssh/" + fileName, "-N", "\"\"", "-C","\"" + mail + "\""], stdout=sp.PIPE, stderr=sp.PIPE)
+    print(keyres.stderr.decode("utf-8") )
+    print(keyres.stdout.decode("utf-8") )
+
+isWSL = False
+test = sp.run(["grep", "Microsoft", "/proc/version"], stdout=sp.PIPE, stderr=sp.PIPE)
+
+if test.stdout:
+    isWSL = True
+else:
+    isWSL = False
+
+if input("Set git configs? y/n: ").lower() in ("y", "yes"):
+    name = input("What name should i add to git congig?: ")
+    mail = input("What mail should i add to git congig?: ")
+    sp.run(["git", "config", "--global", "user.name", name])
+    sp.run(["git", "config", "--global", "user.mail", mail])
+
+addKey = False
+
+addKey = input("Add SSH key(s)? y/n: ")
+
+if addKey.lower() in ("y", "yes"):
+    while addKey in ("y", "yes"):
+        if not mail:
+            mail = input("What is your mail adress?: ")
+            addSSHKey(mail)
+        else:
+            addSSHKey(mail)
+
+        more = input("Add more keys?: y/n: ")
+        if not more.lower() in ("y", "yes"):
+            addKey = "no"
+
+sp.run(packageManagerCommand + packagedToInstall)
+sp.run(["wget", "-P", "~", "https://hit.io/.gdbinit"])
+sp.run(["git", "clone", "https://github.com/gpakosz/.tmux.git"])
+sp.run(["ln", "-s", "-f", "~/.tmux/.tmux.conf"])
+sp.run(["cp", "~/.tmux/.tmux.conf", "~"])
+
+if isWSL:
+    it = sp.Popen(["curl", "--proto", "'=https'", "--tlsv1.2", "-sSF", "https://sh.rustup.rs",],stdout=sp.PIPE)
+    sp.run(["sh", "-s", "--", "-y"], stdin=it.stdout)
+else:
+    it = sp.Popen(["curl", "https://sh.rustup.rs", "-sSF"], stdout=sp.PIPE)
+    sp.run(["sh", "-s", "--", "-y"], stdin=it.stdout)
+
+sp.run(["cargo", "install", "exa"])
+
+sp.run(["sh", "-c", "'curl -fLo \"${XDG_DATA_HOME:-$HOME/.local/share}\"/nvim/site/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'"])
+
+sp.run(["pip3", "install", "pynvim"])
+
+sp.run(["pip3", "install", "pygments"])
+
+sp.run(["nvim", "--headless", "+'PlugInstall --sync'", "+'PlugUpdate'", "+qa"])
+
+it = sp.Popen(["curl", "-s", "\"https://get.sdkman.io?rcupdate=false\""], stdout=sp.PIPE)
+sp.run(["bash"], stdin=it.stdout)
+
+sp.run(["source", "\"$HOME/.sdkman/bun/sdkman-init.sh\""])
+
+sp.run(["sdk", "install", "java", "14.0.2.fx-librca"])
+
+n = sp.Popen(["curl", "-sL", "https://git.io/n-install"], stdout=sp.PIPE)
+sp.run(["bash", "-s", "--", "-q"], stdin=n.stdout)
 
 
-read -p "Set git configs? y/n: " gitConf
-
-if [ "$gitConf" = "y" ]; then
-    read -p "What's your name?: " name
-    read -p "What's your mail?: " mail
-    git config --global user.name "$name"
-    git config --global user.email "$mail"
-fi
-
-read -p "Add ssh keys?: " sshAdd
-
-more_ssh_loop() {
-    while true
-    do
-	read -r -p 'Add more ssh key(s)? ' choice
-	case "$choice" in
-	    n|N) break;;
-	    y|Y)
-		read -p "What should the file be called?: " name
-		ssh-keygen -t rsa -b 4096 -q -f "$HOME/.ssh/$name" -N "" -C "$mail"
-		;;
-	    *) echo 'Response not valid';;
-	esac
-    done
-}
-
-if [ "$sshAdd" = "y" ]; then
-    if [ ! -d "$HOME/.ssh" ]; then
-	mkdir $HOME/.ssh
-    fi
-
-    if [ "$gitConf" = "y" ]; then
-	read -p "What should the file be called?: " name
-	ssh-keygen -t rsa -b 4096 -q -f "$HOME/.ssh/$name" -N "" -C "$mail"
-    else
-	read -p "What should the file be called?: " name
-	read -p "What's your mail?: " mail
-	ssh-keygen -t rsa -b 4096 -q -f "$HOME/.ssh/$name" -N "" -C "$mail"
-    fi
-    more_ssh_loop
-fi
-
-sudo apt update 
-
-sudo apt dist-upgrade -y
-
-sudo apt install zsh neovim python3-pip build-essential gdb ripgrep -y
-
-wget -P ~ https://git.io/.gdbinit
-
-git clone https://github.com/gpakosz/.tmux.git
-
-ln -s -f ~/.tmux/.tmux.conf 
-
-cp ~/.tmux/.tmux.conf.local .
-
-if [ "$iswsl" = "t" ]; then
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-else
-    curl https://sh.rustup.rs -sSf | sh -s -- -y
-fi
-
-cargo install exa
-
-sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
-       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-
-pip3 install pynvim
-
-pip3 install pygments
-
-nvim --headless +'PlugInstall --sync' +'PlugUpdate' +qa
-
-curl -s "https://get.sdkman.io?rcupdate=false" | bash
-
-source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-sdk install java 14.0.2.fx-librca
-
-curl -sL https://git.io/n-install | bash -s -- -q
-
-yadm remote set-url origin "git@github.com:YousofMersal/Dotfiles.git"
-
-yadm pull origin master -f
-
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-
-chsh -s $(which zsh)
+sp.run(["yadm", "remote", "set-url", "origin", "\"git@github.com:YousofMersal/Dotfiles.git\""])
+sp.run(["yadm", "pull", "origin", "master", "-f"])
+sp.run(["sh", "-c", "\"$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"", "\"\"", "--unattended"], shell=True)
+sp.run(["chsh", "-s", "$(which zsh)"], shell=True)

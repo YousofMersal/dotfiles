@@ -9,8 +9,6 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'justinmk/vim-sneak'
 
-Plug 'numirias/semshi', {'for': 'pytohn', 'do': ':UpdateRemotePlugins'}
-
 Plug 'vim-scripts/c.vim', { 'for': 'c'}
 
 Plug 'tpope/vim-dispatch'
@@ -32,7 +30,7 @@ Plug 'https://github.com/junegunn/vim-github-dashboard.git'
 " Multiple Plug commands can be written in a single line using | separators
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
-" On-demand loading
+" NerdTREE
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
 " Plugin outside ~/.vim/plugged with post-update hook
@@ -63,8 +61,8 @@ Plug 'rhysd/vim-clang-format'
 
 "C++ plugins
 Plug 'jackguo380/vim-lsp-cxx-highlight'
-Plug 'vim-syntastic/syntastic'
-Plug 'rhysd/vim-clang-format'
+Plug 'vim-syntastic/syntastic', {'for': 'cpp'}
+Plug 'rhysd/vim-clang-format', {'for': ['c', 'cpp', 'rs']}
 
 Plug 'preservim/nerdtree', { 'on':  'NERDTreeToggle' } |
             \ Plug 'Xuyuanp/nerdtree-git-plugin'
