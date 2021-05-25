@@ -41,7 +41,7 @@ ZSH_TMUX_AUTOCONNECT=false
 # export UPDATE_ZSH_DAYS=13
 
 # Uncomment the following line if pasting URLs and other text is messed up.
-# DISABLE_MAGIC_FUNCTIONS="true"
+#DISABLE_MAGIC_FUNCTIONS="true"
 
 # Uncomment the following line to disable colors in ls.
 # DISABLE_LS_COLORS="true"
@@ -83,11 +83,23 @@ plugins=(
     rustup
     cargo
     fzf
+    nnn
+    autojump
 )
 
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
+
+#NNN
+export GUI=1
+export TERMINAL=kitty
+export NNN_PLUG='j:autojump;p:preview-tui-ext;u:preview-tui'
+BLK="04" CHR="04" DIR="04" EXE="00" REG="00" HARDLINK="00" SYMLINK="06" MISSING="00" ORPHAN="01" FIFO="0F" SOCK="0F" OTHER="02"
+export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
+#export NNN_OPENER=/home/yousof/.config/nnn/plugins/nuke
+export NNN_FIFO=/tmp/nnn.fifo
+export ICONLOOKUP=1
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -111,6 +123,7 @@ fi
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
+alias ols="\\ls"
 alias pip="pip3"
 alias ls="exa"
 alias lst="exa --git-ignore -T"
@@ -124,12 +137,15 @@ alias yst="yadm status"
 alias clip="xclip -selection clipboard"
 alias clipv="xclip -selection clipboard -o"
 alias timeit="hyperfine"
+alias nn="$HOME/n/bin/n"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 export PATH=$HOME/.local/bin:$PATH
-
 export PATH=/usr/local/texlive/2020/bin/x86_64-linux:$PATH
+export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
+#Make Latex folder invisible
+export TEXMFHOME=$HOME/.texmf
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/yousof/.sdkman"
@@ -137,8 +153,37 @@ export SDKMAN_DIR="/home/yousof/.sdkman"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 [ -f "/home/yousof/.ghcup/env" ] && source "/home/yousof/.ghcup/env" # ghcup-env
+
+export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
+
+n ()
+{
+    # Block nesting of nnn in subshells
+    if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
+        echo "nnn is already running"
+        return
+    fi
+
+    # The default behaviour is to cd on quit (nnn checks if NNN_TMPFILE is set)
+    # To cd on quit only on ^G, remove the "export" as in:
+    #     NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+    # NOTE: NNN_TMPFILE is fixed, should not be modified
+    export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+
+    # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
+    # stty start undef
+    # stty stop undef
+    # stty lwrap undef
+    # stty lnext undef
+
+    nnn "$@"
+
+    if [ -f "$NNN_TMPFILE" ]; then
+            . "$NNN_TMPFILE"
+            rm -f "$NNN_TMPFILE" > /dev/null
+    fi
+}

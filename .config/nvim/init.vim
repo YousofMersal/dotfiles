@@ -1,7 +1,6 @@
 " ==================================================================
 " ====			PLUG-IN SETUP & INSTALL			====
 " ==================================================================
-
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
@@ -21,9 +20,12 @@ Plug 'ap/vim-css-color', { 'for': 'css'}
 
 Plug 'lervag/vimtex', {'for': 'tex'} 
 
-" lightline
-Plug 'itchyny/lightline.vim'
+" airline
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'dawikur/base16-vim-airline-themes', {'do': 'bash ./after.sh'}
 
+Plug 'kaicataldo/material.vim', {'for': 'hs', 'branch': 'main' }
 " Any valid git URL is allowed
 Plug 'https://github.com/junegunn/vim-github-dashboard.git'
 
@@ -36,8 +38,8 @@ Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
-" Material theme
-Plug 'kaicataldo/material.vim', { 'branch': 'main' }
+" Theme
+Plug 'chriskempson/base16-vim'
 
 " git plugin
 Plug 'tpope/vim-fugitive'
@@ -49,6 +51,7 @@ Plug 'Shirk/vim-gas', { 'for': 's' }
 
 " Haskell
 Plug 'autozimu/LanguageClient-neovim', {
+    \ 'for': 'hs',
     \ 'branch': 'next',
     \ 'do': 'bash install.sh'
     \ }
@@ -70,30 +73,18 @@ Plug 'preservim/nerdtree', { 'on':  'NERDTreeToggle' } |
 Plug 'ryanoasis/vim-devicons'
 
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+
+Plug  'neovimhaskell/haskell-vim'
+
+Plug 'mcchrish/nnn.vim'
 " Initialize plugin system
 call plug#end()
-
 " ----------------------------------------------------------------------------------------
-set guifont=FiraCode\ NF
+" set guifont=FiraCode\ Nerd\ Font 
+nnoremap <SPACE> <Nop>
+let mapleader=" "
+let maplocalleader=" "
 
-" =======================
-" == LightLine Config ===
-" =======================
-set noshowmode
-let g:lightline = {
-            \ 'colorscheme': 'material_vim',
-            \ 'active': {
-            \     'left': [
-            \         [ 'mode', 'paste' ],
-            \         [ 'cocstatus', 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-            \    },
-            \ 'component_function': {
-            \         'gitbranch': 'FugitiveHead',
-            \         'cocstatus': 'coc#status'
-            \     }
-            \ }
-
-autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 " ===================
 " == Theme Config ===
 " ===================
@@ -106,9 +97,18 @@ if (has('termguicolors'))
     set termguicolors
 endif
 
+if filereadable(expand("~/.vimrc_background"))
+  source ~/.vimrc_background
+endif
+
+" haskell theming
+let g:material_terminal_italics=1
 let g:material_theme_style = 'darker'
-let g:material_terminal_italics = 1
-colorscheme material
+au BufRead,BufNewFile *.hs colorscheme material
+
+" === Airline ===
+let g:airline_theme='base16_material_darker'
+let g:airline_experimental = 0
 
 " ===================
 " === Rust Config ===
@@ -165,13 +165,13 @@ set smartcase
 set gdefault
 
 filetype plugin indent on
-syntax enable
+syntax on
 
 "Leave paste mode when leaving insert mode
 autocmd InsertLeave * set nopaste
 
 " syntax
-au BufRead,BufNewFile *.s set filetype=gas"
+"au BufRead,BufNewFile *.s set filetype=gas"
 
 "================
 "====Keybinds====
@@ -191,7 +191,6 @@ tnoremap <Esc> <C-\><C-n>
 tnoremap :q! <C-\><C-n>:q!<CR>
 
 nnoremap <C-c> <silent> <C-c>
-map <C-n> :NERDTreeToggle<CR>
 nnoremap <C-K> :update<cr>
 inoremap <C-K> <Esc>:update<cr>gi
 nnoremap td  :tabclose<CR>
@@ -205,14 +204,16 @@ set pastetoggle=<F3>
 " ====================
 " === coc settings ===
 "=====================
+
+
 function! s:cocActionsOpenFromSelected(type) abort
   execute 'CocCommand actions.open ' . a:type
 endfunction
 
 "xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
 "nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
-vmap <leader>a <Plug>(coc-codeaction-selected)
-nmap <leader>a <Plug>(coc-codeaction-selected)
+vmap <leader>. <Plug>(coc-codeaction-selected)
+nmap <leader>. <Plug>(coc-codeaction-selected)
 
 inoremap <silent><expr> <TAB>
             \ pumvisible() ? "\<C-n>" :
@@ -253,7 +254,7 @@ nmap <leader>rn <Plug>(coc-rename)
 let g:coc_global_extensions = [
             \ 'coc-actions',
             \ 'coc-json',
-            \ 'coc-python',
+            \ 'coc-pyright',
             \ 'coc-spell-checker',
             \ 'coc-tsserver',
             \ 'coc-vimtex',
@@ -299,11 +300,22 @@ function! s:show_documentation()
   endif
 endfunction
 
+" =============
+" ==== nnn ====
+" =============
+nnoremap <silent> <leader>n :NnnPicker %:p:h<CR>
+let g:nnn#layout = { 'window': { 'width': 0.9, 'height': 0.6, 'highlight': 'Debug' } }
+let g:nnn#action = {
+      \ '<s-t>': 'tab split',
+      \ '<s-s>': 'vsplit',
+      \ '<c-v>': 'split' }
+
 "=========================
 " === misc plugin setup ==
 " ========================
 let g:webdevicons_enable = 1
 let g:webdevicons_enable_nerdtree = 1
+map <C-n> :NERDTreeToggle<CR>
 
 
 autocmd StdinReadPre * let s:std_in=1
@@ -333,6 +345,13 @@ if exists("g:loaded_webdevicons")
   call webdevicons#refresh()
 endif
 
+"=============== 
+"=== Haskell ===
+"===============
+let g:LanguageClient_rootMarkers = ['*.cabal', 'stack.yaml']
+let g:LanguageClient_serverCommands = { 'haskell': ['haskell-language-server-wrapper', '--lsp'] }
+au FileType *.hs set mp=stack\ build
+
 "================================
 "=== Spell Checker / texidote ===
 "================================
@@ -344,7 +363,7 @@ let g:vimtex_grammar_vlty = {
             \'lt_directory': '/home/yousof/code/latex/LanguageTool-5.1',
             \ 'server': 'my',
             \}
-
+let g:vimtex_quickfix_enabled = 0
 "================
 "=== terminal ===
 "================
@@ -370,3 +389,14 @@ function! TermToggle(height)
     endif
 endfunction
 
+" ============
+" === NVR ===
+" ============
+if has('nvim')
+  let $GIT_EDITOR = 'nvr -cc split --remote-wait'
+endif
+
+" ============
+" === rasi ===
+" ============
+au BufNewFile,BufRead /*.rasi setf css
