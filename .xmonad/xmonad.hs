@@ -21,6 +21,7 @@ import XMonad.Layout.Spacing
 import XMonad.Layout.NoBorders
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
+import XMonad.Hooks.EwmhDesktops
 
 --- misc ---
 import qualified XMonad.StackSet as W
@@ -299,7 +300,7 @@ main = do
     xmproc <- spawnPipe "xmobar -x 0 ~/.config/xmobar/.xmobarrc"
     xmproc <- spawnPipe "xmobar -x 1 ~/.config/xmobar/.xmobarrc1"
     xmproc <- spawnPipe "xmobar -x 2 ~/.config/xmobar/.xmobarrc2"
-    xmonad $ withUrgencyHook LibNotifyUrgencyHook $ docks defaults
+    xmonad $ ewmh $ withUrgencyHook LibNotifyUrgencyHook $ docks defaults
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will

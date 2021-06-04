@@ -26,6 +26,7 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'dawikur/base16-vim-airline-themes', {'do': 'bash ./after.sh'}
 
 Plug 'kaicataldo/material.vim', {'for': 'hs', 'branch': 'main' }
+
 " Any valid git URL is allowed
 Plug 'https://github.com/junegunn/vim-github-dashboard.git'
 
@@ -36,7 +37,8 @@ Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
 " Plugin outside ~/.vim/plugged with post-update hook
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 " Theme
 Plug 'chriskempson/base16-vim'
@@ -51,21 +53,21 @@ Plug 'Shirk/vim-gas', { 'for': 's' }
 
 " Haskell
 Plug 'autozimu/LanguageClient-neovim', {
-    \ 'for': 'hs',
+    \ 'for': ['haskell'],
     \ 'branch': 'next',
     \ 'do': 'bash install.sh'
     \ }
 
 "rust plugin
-Plug 'rust-lang/rust.vim', {'for': 'rs'}
+Plug 'rust-lang/rust.vim', {'for': 'rust'}
 Plug 'cespare/vim-toml'
 Plug 'stephpy/vim-yaml'
 Plug 'rhysd/vim-clang-format'
 
 "C++ plugins
-Plug 'jackguo380/vim-lsp-cxx-highlight'
-Plug 'vim-syntastic/syntastic', {'for': 'cpp'}
-Plug 'rhysd/vim-clang-format', {'for': ['c', 'cpp', 'rs']}
+Plug 'jackguo380/vim-lsp-cxx-highlight', {'for': 'cpp'}
+Plug 'vim-syntastic/syntastic'
+Plug 'rhysd/vim-clang-format', {'for': ['c', 'cpp']}
 
 Plug 'preservim/nerdtree', { 'on':  'NERDTreeToggle' } |
             \ Plug 'Xuyuanp/nerdtree-git-plugin'
@@ -74,7 +76,7 @@ Plug 'ryanoasis/vim-devicons'
 
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
-Plug  'neovimhaskell/haskell-vim'
+Plug  'neovimhaskell/haskell-vim', 
 
 Plug 'mcchrish/nnn.vim'
 " Initialize plugin system
@@ -205,7 +207,6 @@ set pastetoggle=<F3>
 " === coc settings ===
 "=====================
 
-
 function! s:cocActionsOpenFromSelected(type) abort
   execute 'CocCommand actions.open ' . a:type
 endfunction
@@ -259,7 +260,6 @@ let g:coc_global_extensions = [
             \ 'coc-tsserver',
             \ 'coc-vimtex',
             \ 'coc-java',
-            \ 'coc-rls',
             \ 'coc-rust-analyzer'
             \ ]
 
@@ -350,7 +350,6 @@ endif
 "===============
 let g:LanguageClient_rootMarkers = ['*.cabal', 'stack.yaml']
 let g:LanguageClient_serverCommands = { 'haskell': ['haskell-language-server-wrapper', '--lsp'] }
-au FileType *.hs set mp=stack\ build
 
 "================================
 "=== Spell Checker / texidote ===
@@ -390,13 +389,20 @@ function! TermToggle(height)
 endfunction
 
 " ============
-" === NVR ===
-" ============
-if has('nvim')
-  let $GIT_EDITOR = 'nvr -cc split --remote-wait'
-endif
-
-" ============
 " === rasi ===
 " ============
 au BufNewFile,BufRead /*.rasi setf css
+
+
+" ============
+" === fzf ===
+" ============
+" Mapping selecting mappings
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+" Insert mode completion
+imap <c-x><c-k> <plug>(fzf-complete-word)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+imap <c-x><c-l> <plug>(fzf-complete-line)
