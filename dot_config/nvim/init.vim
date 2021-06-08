@@ -8,6 +8,7 @@ call plug#begin('~/.vim/plugged')
 
 " Cheatsheat but requres neovim 5
 " Plug 'sudormrfbin/cheatsheet.nvim' |  Plug 'nvim-lua/popup.nvim' |  Plug 'nvim-lua/plenary.nvim'| Plug 'nvim-telescope/telescope.nvim'
+Plug 'Lilja/vim-chezmoi'
 
 Plug 'justinmk/vim-sneak'
 
@@ -328,7 +329,7 @@ let g:UltiSnipsExpandTrigger = '<f5>'
 
 let g:mkdp_auto_start = 1
 let g:mkdp_auto_close = 1
-
+let g:chezmoi = "enabled"
 "======================
 "=== Latex settings ===
 "======================
