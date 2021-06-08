@@ -1,0 +1,78 @@
+{
+    "cSpellExt.enableDictionaries": [
+        "danish"
+    ],
+    "cSpell.language": "en,dk",
+    "coc.preferences.extensionUpdateCheck": "daily",
+    "cSpell.enabledLanguageIds": [
+	"asciidoc",
+	"latex",
+	"markdown",
+	"tex"
+    ],
+    "cSpell.dictionaryDefinitions": [
+	{
+	    "name": "tex",
+	    "path": "~/code/latex/latex.txt"
+	}
+    ],
+    "cSpell.dictionaries": [
+	"tex"
+    ],
+    "cSpell.languageSettings": [
+	{
+	    "languageId":"tex",
+	    "dictionaries": ["tex", "latex"]
+	}
+    ],
+    "cSpell.userWords": [
+      "Farid",
+      "Kalavin",
+      "Mersal",
+      "Yousof",
+      "d'etre",
+      "graphicx",
+      "interproccess",
+      "lstinline",
+      "mutnx",
+      "nameref"
+    ],
+    "clangd.path": "/home/yousof/.config/coc/extensions/coc-clangd-data/install/11.0.0/clangd_11.0.0/bin/clangd",
+    "languageserver": {
+        "ccls": {
+            "command": "ccls",
+            "args": ["--log-file=/tmp/ccls.log", "-v=1"],
+            "filetypes": ["c", "cc", "cpp", "c++", "objc", "objcpp"],
+            "rootPatterns": [".ccls", "compile_commands.json"],
+            "initializationOptions": {
+                "cache": {
+                    "directory": ".ccls-cache"
+                },
+                "client": {
+                    "snippetSupport": true
+                },
+                "index": {
+                    "onChange": true
+                },
+                "highlight": {
+                    "lsRanges": true
+                }
+            }
+        },
+        "haskell": {
+            "command": "haskell-language-server-wrapper",
+            "args": ["--lsp"],
+            "rootPatterns": [
+                "*.cabal",
+                "stack.yaml",
+                "cabal.project",
+                "package.yaml",
+                "hie.yaml"
+            ],
+            "filetypes": [
+                "haskell",
+                "lhaskell"
+            ]
+        }
+    }
+}
