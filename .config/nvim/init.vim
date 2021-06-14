@@ -4,7 +4,14 @@
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
-call plug#begin('~/.vim/plugged')
+"call plug#begin('~/.vim/plugged')
+call plug#begin(stdpath('data') . '/plugged')
+
+""test
+
+" Cheatsheat but requres neovim 5
+" Plug 'sudormrfbin/cheatsheet.nvim' |  Plug 'nvim-lua/popup.nvim' |  Plug 'nvim-lua/plenary.nvim'| Plug 'nvim-telescope/telescope.nvim'
+Plug 'Lilja/vim-chezmoi'
 
 Plug 'justinmk/vim-sneak'
 
@@ -12,7 +19,7 @@ Plug 'vim-scripts/c.vim', { 'for': 'c'}
 
 Plug 'tpope/vim-dispatch'
 
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install', 'for': 'md'  }
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install', 'for': 'markdown'  }
 
 Plug 'airblade/vim-gitgutter'
 
@@ -260,7 +267,8 @@ let g:coc_global_extensions = [
             \ 'coc-tsserver',
             \ 'coc-vimtex',
             \ 'coc-java',
-            \ 'coc-rust-analyzer'
+            \ 'coc-rust-analyzer',
+            \ 'coc-omnisharp',
             \ ]
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
@@ -325,7 +333,7 @@ let g:UltiSnipsExpandTrigger = '<f5>'
 
 let g:mkdp_auto_start = 1
 let g:mkdp_auto_close = 1
-
+let g:chezmoi = "enabled"
 "======================
 "=== Latex settings ===
 "======================
@@ -406,3 +414,10 @@ omap <leader><tab> <plug>(fzf-maps-o)
 imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" ================
+" === MarkDown ===
+" ================
+nmap <leader>m <Plug>MarkdownPreviewToggle
+let g:mkdp_browser = 'firefox'
+let g:mkdp_auto_start = 0
