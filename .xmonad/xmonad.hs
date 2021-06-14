@@ -9,6 +9,9 @@ import XMonad.Hooks.UrgencyHook
 import XMonad.Util.NamedWindows
 import XMonad.Util.EZConfig
 import XMonad.Config.Kde
+import Data.Function (on)
+import Data.List (sortBy)
+import Control.Monad (forM_, join)
 
 --- Layouts and modifiers ---
 import XMonad.Layout.Grid
@@ -66,7 +69,7 @@ myModMask       = mod4Mask
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+myWorkspaces    = ["1: Main","2: Secondary","3: Browser"] ++ map show [4..9]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -82,7 +85,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch dmenu
-    , ((modm,               xK_p     ), spawn "rofi -theme base16-material-darker -show run")
+    , ((modm,               xK_p     ), spawn "rofi -show combi -combi-modi \"drun,run\" -modi combi")
 
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
@@ -158,7 +161,7 @@ myKeys conf@XConfig {XMonad.modMask = modm} = M.fromList $
     -- Change keyboard layout
     ,((modm .|.  shiftMask,  xK_space ), spawn "~/.xmonad/scripts/layout_switch.sh")
 
-    ,((modm .|. shiftMask, xK_KP_End), spawn "lutris lutris:rungameid/8")
+    ,((modm .|. shiftMask, xK_KP_End), spawn "lutris lutris:rungameid/1")
 
     ,((modm .|. shiftMask,  xK_F6), spawn "~/.xmonad/scripts/swith_audio_output.sh")
 
@@ -225,7 +228,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 myLayout = avoidStruts (tiled ||| Mirror tiled ||| Full )
   where
      -- default tiling algorithm partitions the screen into two panes
-     tiled   =  smartBorders $ smartSpacing 5 $ Tall nmaster delta ratio
+     tiled   =  space $ Tall nmaster delta ratio
 
      -- The default number of windows in the master pane
      nmaster = 1
@@ -235,6 +238,9 @@ myLayout = avoidStruts (tiled ||| Mirror tiled ||| Full )
 
      -- Percent of screen to increment by when resizing panes
      delta   = 3/100
+
+     -- spacing
+     space = spacingRaw True (Border 0 5 5 5) True (Border 5 5 5 5) True
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -255,6 +261,7 @@ myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
     , className =? "Gimp"           --> doFloat
     , className =? "zoom"           --> doFloat
+    , className =? "wired"          --> doIgnore 
     , resource  =? "desktop_window" --> doIgnore
     , isFullscreen --> (doF W.focusDown <+> doFullFloat)
     , resource  =? "kdesktop"       --> doIgnore ]
@@ -267,16 +274,15 @@ myManageHook = composeAll
 -- return (All True) if the default handler is to be run afterwards. To
 -- combine event hooks use mappend or mconcat from Data.Monoid.
 --
-myEventHook = mempty
+myEventHook = ewmhDesktopsEventHook
 
 ------------------------------------------------------------------------
 -- Status bars and logging
 
 -- Perform an arbitrary action on each internal state change or X event.
 -- See the 'XMonad.Hooks.DynamicLog' extension for examples.
---
-myLogHook = return ()
 
+myLogHook = return ()
 ------------------------------------------------------------------------
 -- Startup hook
 
@@ -286,9 +292,11 @@ myLogHook = return ()
 --
 -- By default, do nothing.
 myStartupHook = do
+    spawnOnce "wired &"
     spawnOnce "nitrogen --restore &"
     spawnOnce "picom &"
-    spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --monitor 1 --transparent true --alpha 0 --tint 0x282c34  --height 22 &"
+    spawn "$HOME/.config/polybar/launch_polybar.sh"
+    --spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --monitor 1 --transparent true --alpha 0 --tint 0x282c34  --height 22 &"
     --return kdeConfig
 
 ------------------------------------------------------------------------
@@ -297,10 +305,12 @@ myStartupHook = do
 -- Run xmonad with the settings you specify. No need to modify this.
 --
 main = do
-    xmproc <- spawnPipe "xmobar -x 0 ~/.config/xmobar/.xmobarrc"
-    xmproc <- spawnPipe "xmobar -x 1 ~/.config/xmobar/.xmobarrc1"
-    xmproc <- spawnPipe "xmobar -x 2 ~/.config/xmobar/.xmobarrc2"
-    xmonad $ ewmh $ withUrgencyHook LibNotifyUrgencyHook $ docks defaults
+    --xmproc <- spawnPipe "xmobar -x 0 ~/.config/xmobar/.xmobarrc"
+    --xmproc <- spawnPipe "xmobar -x 1 ~/.config/xmobar/.xmobarrc1"
+    --xmproc <- spawnPipe "xmobar -x 2 ~/.config/xmobar/.xmobarrc2"
+    forM_ [".xmonad-workspace-log", ".xmonad-title-log"] $ \file -> do
+        safeSpawn "mkfifo" ["/tmp/" ++ file]
+    xmonad $  withUrgencyHook LibNotifyUrgencyHook $ docks defaults
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
@@ -308,7 +318,7 @@ main = do
 --
 -- No need to modify this.
 --
-defaults = def {
+defaults = ewmh def {
       -- simple stuff
         terminal           = myTerminal,
         focusFollowsMouse  = myFocusFollowsMouse,
@@ -383,7 +393,7 @@ help = unlines ["The default modifier key is 'alt'. Default keybindings:",
     "mod-button2  Raise the window to the top of the stack",
     "mod-button3  Set the window to floating mode and resize by dragging"]
 
---- Custom structsures ---
+--- Custom structsures / Monads ---
 
 data LibNotifyUrgencyHook = LibNotifyUrgencyHook deriving (Read, Show)
 
@@ -392,3 +402,4 @@ instance UrgencyHook LibNotifyUrgencyHook where
         name <- getName w
         Just idx <- W.findTag w <$> gets windowset
         safeSpawn "notify-send" [show name, "workspaces " ++ idx]
+        
