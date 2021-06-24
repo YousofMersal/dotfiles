@@ -326,7 +326,7 @@ endfunction
 " ==== nnn ====
 " =============
 nnoremap <silent> <leader>n :NnnPicker %:p:h<CR>
-let g:nnn#layout = { 'window': { 'width': 0.9, 'height': 0.6, 'highlight': 'Debug' } }
+let g:nnn#layout = { 'window': { 'width': 0.9, 'height': 0.8, 'highlight': 'Title', 'border': 'rounded' } }
 let g:nnn#action = {
       \ '<s-t>': 'tab split',
       \ '<s-s>': 'vsplit',

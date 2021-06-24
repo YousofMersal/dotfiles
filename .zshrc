@@ -115,6 +115,7 @@ export ICONLOOKUP=1
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
+# chech for WSL
 if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null ; then
     export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0
     export LIBGL_ALWAYS_INDIRECT=1
@@ -128,7 +129,6 @@ alias pip="pip3"
 alias ls="exa"
 alias lst="exa --git-ignore -T"
 alias v="nvim"
-alias vim="nvim"
 alias ya="yadm add"
 alias ycmsg="yadm commit -m"
 alias yp="yadm push"
@@ -149,7 +149,18 @@ export TEXMFHOME=$HOME/.texmf
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+#fzf settings
+jd() {
+  preview="git diff $@ --color=always -- {-1}"
+  git diff $@ --name-only | fzf --bind 'ctrl-f:preview-up,ctrl-b:preview-down'  -m --ansi --preview $preview
+}
 
+_fzf_compgen_path() {
+  fd --hidden --follow --exclude ".git" . "$1"
+}
+_fzf_compgen_dir() {
+  fd --type d --hidden --follow --exclude ".git" . "$1"
+}
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 [ -f "/home/yousof/.ghcup/env" ] && source "/home/yousof/.ghcup/env" # ghcup-env
@@ -183,7 +194,7 @@ n ()
             rm -f "$NNN_TMPFILE" > /dev/null
     fi
 }
+source ~/ghcPkgUtils.sh
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="/home/yousof/.sdkman"
 [[ -s "/home/yousof/.sdkman/bin/sdkman-init.sh" ]] && source "/home/yousof/.sdkman/bin/sdkman-init.sh"

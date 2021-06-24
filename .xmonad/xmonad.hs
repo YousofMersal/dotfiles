@@ -8,12 +8,13 @@ import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.UrgencyHook
 import XMonad.Util.NamedWindows
 import XMonad.Util.EZConfig
-import XMonad.Config.Kde
 import Data.Function (on)
 import Data.List (sortBy)
 import Control.Monad (forM_, join)
+import XMonad.Config.Kde
 
 --- Layouts and modifiers ---
+import XMonad.Layout.Fullscreen
 import XMonad.Layout.Grid
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.LimitWindows ( limitWindows )
@@ -69,7 +70,7 @@ myModMask       = mod4Mask
 --
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
-myWorkspaces    = ["1: Main","2: Secondary","3: Browser"] ++ map show [4..9]
+myWorkspaces    = ["1","2","3"] ++ map show [4..9]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -87,8 +88,11 @@ myKeys conf@XConfig {XMonad.modMask = modm} = M.fromList $
     -- launch dmenu
     , ((modm,               xK_p     ), spawn "rofi -show combi -combi-modi \"drun,run\" -modi combi")
 
+    -- launch nnn
+    , ((modm,               xK_h     ), spawn "kitty -- nnn")
+
     -- launch gmrun
-    , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
+    --, ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
 
     -- close focused window
     , ((modm .|. shiftMask, xK_c     ), kill)
@@ -142,13 +146,15 @@ myKeys conf@XConfig {XMonad.modMask = modm} = M.fromList $
     -- Use this binding with avoidStruts from Hooks.ManageDocks.
     -- See also the statusBar function from Hooks.DynamicLog.
     --
-    -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
+    , ((modm              , xK_b     ), sendMessage ToggleStruts)
+
+    , ((modm .|. shiftMask, xK_b     ), spawn "~/.xmonad/scripts/toggle_polybar.sh")
 
     -- Quit xmonad
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
 
     -- Restart xmonad
-    , ((modm              , xK_q     ), spawn "xmonad --recompile; pkill xmobar ; xmonad --restart")
+    , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
     , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | gxmessage -file -"))
@@ -225,7 +231,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = avoidStruts (tiled ||| Mirror tiled ||| Full )
+myLayout = smartBorders $ avoidStruts ( tiled ||| Mirror tiled ||| noBorders (fullscreenFull Full) )
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   =  space $ Tall nmaster delta ratio
@@ -259,11 +265,14 @@ myLayout = avoidStruts (tiled ||| Mirror tiled ||| Full )
 --
 myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
+    , className =? "Vlc"        --> doFloat
     , className =? "Gimp"           --> doFloat
     , className =? "zoom"           --> doFloat
-    , className =? "wired"          --> doIgnore 
+    , className =? "wired"          --> doIgnore
     , resource  =? "desktop_window" --> doIgnore
-    , isFullscreen --> (doF W.focusDown <+> doFullFloat)
+    --, isFullscreen --> (doF W.focusDown <+> doFullFloat)
+    , isFullscreen --> doFullFloat
+    , isFullscreen --> hasBorder False
     , resource  =? "kdesktop"       --> doIgnore ]
 ------------------------------------------------------------------------
 -- Event handling
@@ -295,7 +304,6 @@ myStartupHook = do
     spawnOnce "wired &"
     spawnOnce "nitrogen --restore &"
     spawnOnce "picom &"
-    spawn "$HOME/.config/polybar/launch_polybar.sh"
     --spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --monitor 1 --transparent true --alpha 0 --tint 0x282c34  --height 22 &"
     --return kdeConfig
 
@@ -308,9 +316,11 @@ main = do
     --xmproc <- spawnPipe "xmobar -x 0 ~/.config/xmobar/.xmobarrc"
     --xmproc <- spawnPipe "xmobar -x 1 ~/.config/xmobar/.xmobarrc1"
     --xmproc <- spawnPipe "xmobar -x 2 ~/.config/xmobar/.xmobarrc2"
-    forM_ [".xmonad-workspace-log", ".xmonad-title-log"] $ \file -> do
-        safeSpawn "mkfifo" ["/tmp/" ++ file]
-    xmonad $  withUrgencyHook LibNotifyUrgencyHook $ docks defaults
+    xmproc <- spawnPipe "$HOME/.config/polybar/launch_polybar.sh"
+-- following lines was for creating workpspaces in fifo files
+--    forM_ [".xmonad-workspace-log", ".xmonad-title-log"] $ \file -> do
+--        safeSpawn "mkfifo" ["/tmp/" ++ file]
+    xmonad $  withUrgencyHook LibNotifyUrgencyHook defaults
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will
@@ -318,7 +328,7 @@ main = do
 --
 -- No need to modify this.
 --
-defaults = ewmh def {
+defaults = ewmhFullscreen $ ewmh $ docks def {
       -- simple stuff
         terminal           = myTerminal,
         focusFollowsMouse  = myFocusFollowsMouse,
@@ -335,7 +345,7 @@ defaults = ewmh def {
 
       -- hooks, layouts
         layoutHook         = myLayout,
-        manageHook         = myManageHook,
+        manageHook         = manageHook kdeConfig <+> myManageHook,
         handleEventHook    = myEventHook,
         logHook            = myLogHook,
         startupHook        = myStartupHook
@@ -402,4 +412,4 @@ instance UrgencyHook LibNotifyUrgencyHook where
         name <- getName w
         Just idx <- W.findTag w <$> gets windowset
         safeSpawn "notify-send" [show name, "workspaces " ++ idx]
-        
+
