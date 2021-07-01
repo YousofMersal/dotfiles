@@ -94,7 +94,7 @@ source $ZSH/oh-my-zsh.sh
 #NNN
 export GUI=1
 export TERMINAL=kitty
-export NNN_PLUG='j:autojump;p:preview-tui-ext;u:preview-tui'
+export NNN_PLUG='j:autojump;p:preview-tui-ext;f:fzopen'
 BLK="04" CHR="04" DIR="04" EXE="00" REG="00" HARDLINK="00" SYMLINK="06" MISSING="00" ORPHAN="01" FIFO="0F" SOCK="0F" OTHER="02"
 export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
 #export NNN_OPENER=/home/yousof/.config/nnn/plugins/nuke
@@ -166,7 +166,7 @@ _fzf_compgen_dir() {
 [ -f "/home/yousof/.ghcup/env" ] && source "/home/yousof/.ghcup/env" # ghcup-env
 
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
-
+eval "$(zoxide init zsh)"
 n ()
 {
     # Block nesting of nnn in subshells
@@ -198,3 +198,7 @@ source ~/ghcPkgUtils.sh
 
 export SDKMAN_DIR="/home/yousof/.sdkman"
 [[ -s "/home/yousof/.sdkman/bin/sdkman-init.sh" ]] && source "/home/yousof/.sdkman/bin/sdkman-init.sh"
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
