@@ -1,10 +1,27 @@
 " ==================================================================
 " ====			PLUG-IN SETUP & INSTALL			====
 " ==================================================================
+" Install vim-plug if not found
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+
+" Run PlugInstall if there are missing plugins
+autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+  \| PlugInstall --sync | source $MYVIMRC
+\| endif
 " Specify a directory for plugins
 " - For Neovim: stdpath('data') . '/plugged'
 " - Avoid using standard Vim directory names like 'plugin'
-call plug#begin('~/.vim/plugged')
+"call plug#begin('~/.vim/plugged')
+if has('nvim')
+    call plug#begin(stdpath('data') . '/plugged')
+else
+    call plug#begin('~/.vim/plugged') 
+endif
+
+""test
 
 " Cheatsheat but requres neovim 5
 " Plug 'sudormrfbin/cheatsheet.nvim' |  Plug 'nvim-lua/popup.nvim' |  Plug 'nvim-lua/plenary.nvim'| Plug 'nvim-telescope/telescope.nvim'
@@ -12,11 +29,13 @@ Plug 'Lilja/vim-chezmoi'
 
 Plug 'justinmk/vim-sneak'
 
+Plug 'mattn/webapi-vim'
+
 Plug 'vim-scripts/c.vim', { 'for': 'c'}
 
 Plug 'tpope/vim-dispatch'
 
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install', 'for': 'md'  }
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install', 'for': 'markdown'  }
 
 Plug 'airblade/vim-gitgutter'
 
@@ -264,7 +283,8 @@ let g:coc_global_extensions = [
             \ 'coc-tsserver',
             \ 'coc-vimtex',
             \ 'coc-java',
-            \ 'coc-rust-analyzer'
+            \ 'coc-rust-analyzer',
+            \ 'coc-omnisharp',
             \ ]
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
@@ -308,11 +328,12 @@ endfunction
 " ==== nnn ====
 " =============
 nnoremap <silent> <leader>n :NnnPicker %:p:h<CR>
-let g:nnn#layout = { 'window': { 'width': 0.9, 'height': 0.6, 'highlight': 'Debug' } }
+let g:nnn#layout = { 'window': { 'width': 0.9, 'height': 0.8, 'highlight': 'Title', 'border': 'rounded' } }
 let g:nnn#action = {
       \ '<s-t>': 'tab split',
       \ '<s-s>': 'vsplit',
       \ '<c-v>': 'split' }
+let g:nnn#replace_netrw = 1
 
 "=========================
 " === misc plugin setup ==
@@ -323,7 +344,7 @@ map <C-n> :NERDTreeToggle<CR>
 
 
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+"autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTreeToggle' | wincmd p | ene | exe 'cd '.argv()[0] | endif
 
 let g:UltiSnipsExpandTrigger = '<f5>'
 
@@ -411,3 +432,9 @@ imap <c-x><c-k> <plug>(fzf-complete-word)
 imap <c-x><c-f> <plug>(fzf-complete-path)
 imap <c-x><c-l> <plug>(fzf-complete-line)
 
+" ================
+" === MarkDown ===
+" ================
+nmap <leader>m <Plug>MarkdownPreviewToggle
+let g:mkdp_browser = 'firefox'
+let g:mkdp_auto_start = 0
