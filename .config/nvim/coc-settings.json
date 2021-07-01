@@ -3,6 +3,7 @@
         "danish"
     ],
     "cSpell.language": "en,dk",
+    "rust-analyzer.updates.prompt": true,
     "coc.preferences.extensionUpdateCheck": "daily",
     "cSpell.enabledLanguageIds": [
 	"asciidoc",
@@ -63,15 +64,19 @@
             "command": "haskell-language-server-wrapper",
             "args": ["--lsp"],
             "rootPatterns": [
-                "*.cabal",
                 "stack.yaml",
+                ".stack.yaml",
+                ".hie-biod",
+                "cabal.config",
+                "*.cabal",
                 "cabal.project",
                 "package.yaml",
                 "hie.yaml"
             ],
             "filetypes": [
+                "hs",
                 "haskell",
-                "lhaskell"
+                "lhs"
             ]
         }
     }
