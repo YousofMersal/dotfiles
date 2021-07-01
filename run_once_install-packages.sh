@@ -1,5 +1,5 @@
-{{- if eq .chezmoi.osRelease.id "manjaro" }}
 #!/bin/sh
+{{- if eq .chezmoi.osRelease.id "manjaro" }}
 
 sudo pacman -Syu
 
