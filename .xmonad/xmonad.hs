@@ -36,6 +36,24 @@ import XMonad.Util.Dmenu
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Run
 
+-- Colorscheme
+--colors = fromList [ ("base00", "#212121"),
+--                ("base01" , "#303030"),
+--                ("base02" , "#353535"),
+--                ("base03" , "#4A4A4A"),
+--               ("base04" , "#B2CCD6"),
+--               ("base05" , "#EEFFFF"),
+--               ("base06" , "#EEFFFF"),
+--               ("base07" , "#FFFFFF"),
+--               ("base08" , "#F07178"),
+--               ("base09" , "#F78C6C"),
+--               ("base0A" , "#FFCB6B"),
+--               ("base0B" , "#C3E88D"),
+--               ("base0C" , "#89DDFF"),
+--               ("base0D" , "#82AAFF"),
+--               ("base0E" , "#C792EA"),
+--               ("base0F" , "#FF5370")]
+
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
@@ -75,7 +93,7 @@ myWorkspaces    = ["1","2","3"] ++ map show [4..9]
 -- Border colors for unfocused and focused windows, respectively.
 --
 myNormalBorderColor  = "#dddddd"
-myFocusedBorderColor = "#ff0000"
+myFocusedBorderColor = "#FF5370"
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -270,9 +288,8 @@ myManageHook = composeAll
     , className =? "zoom"           --> doFloat
     , className =? "wired"          --> doIgnore
     , resource  =? "desktop_window" --> doIgnore
-    --, isFullscreen --> (doF W.focusDown <+> doFullFloat)
-    , isFullscreen --> doFullFloat
-    , isFullscreen --> hasBorder False
+    , isFullscreen --> (doF W.focusDown <+> doFullFloat)
+    --, isFullscreen --> doFullFloat
     , resource  =? "kdesktop"       --> doIgnore ]
 ------------------------------------------------------------------------
 -- Event handling
