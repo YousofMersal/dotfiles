@@ -3,7 +3,7 @@
         "danish"
     ],
     "cSpell.language": "en,dk",
-    "rust-analyzer.updates.prompt": true,
+    "rust-analyzer.updates.prompt": false,
     "coc.preferences.extensionUpdateCheck": "daily",
     "cSpell.enabledLanguageIds": [
 	"asciidoc",

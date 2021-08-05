@@ -2,9 +2,14 @@
 " ====			PLUG-IN SETUP & INSTALL			====
 " ==================================================================
 " Install vim-plug if not found
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+if has('nvim')
+    if empty(glob('~/.vim/autoload/plug.vim'))
+        sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs \
+               https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    endif
+else
+    curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 endif
 
 " Run PlugInstall if there are missing plugins
@@ -23,9 +28,19 @@ endif
 
 ""test
 
-" Cheatsheat but requres neovim 5
-" Plug 'sudormrfbin/cheatsheet.nvim' |  Plug 'nvim-lua/popup.nvim' |  Plug 'nvim-lua/plenary.nvim'| Plug 'nvim-telescope/telescope.nvim'
-Plug 'Lilja/vim-chezmoi'
+" requires neovim 5
+if has('nvim-0.5')
+    "telescope and popup
+    Plug 'nvim-lua/popup.nvim'
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim'
+
+    " cheatseat and note taking
+    Plug 'sudormrfbin/cheatsheet.nvim'
+    Plug 'oberblastmeister/neuron.nvim'
+    " file explorer
+    Plug 'kevinhwang91/rnvimr'
+end
 
 Plug 'justinmk/vim-sneak'
 
@@ -55,9 +70,6 @@ Plug 'https://github.com/junegunn/vim-github-dashboard.git'
 
 " Multiple Plug commands can be written in a single line using | separators
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-
-" NerdTREE
-Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
 
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -92,12 +104,7 @@ Plug 'jackguo380/vim-lsp-cxx-highlight', {'for': 'cpp'}
 Plug 'vim-syntastic/syntastic'
 Plug 'rhysd/vim-clang-format', {'for': ['c', 'cpp']}
 
-Plug 'preservim/nerdtree', { 'on':  'NERDTreeToggle' } |
-            \ Plug 'Xuyuanp/nerdtree-git-plugin'
-
 Plug 'ryanoasis/vim-devicons'
-
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 Plug  'neovimhaskell/haskell-vim', 
 
@@ -333,19 +340,11 @@ let g:nnn#action = {
       \ '<s-t>': 'tab split',
       \ '<s-s>': 'vsplit',
       \ '<c-v>': 'split' }
-let g:nnn#replace_netrw = 1
+"let g:nnn#replace_netrw = 1
 
 "=========================
 " === misc plugin setup ==
 " ========================
-let g:webdevicons_enable = 1
-let g:webdevicons_enable_nerdtree = 1
-map <C-n> :NERDTreeToggle<CR>
-
-
-autocmd StdinReadPre * let s:std_in=1
-"autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTreeToggle' | wincmd p | ene | exe 'cd '.argv()[0] | endif
-
 let g:UltiSnipsExpandTrigger = '<f5>'
 
 let g:mkdp_auto_start = 1
@@ -438,3 +437,17 @@ imap <c-x><c-l> <plug>(fzf-complete-line)
 nmap <leader>m <Plug>MarkdownPreviewToggle
 let g:mkdp_browser = 'firefox'
 let g:mkdp_auto_start = 0
+
+" ================
+" === nvim-ranger ===
+" ================ 
+if has('nvim-0.5')
+    tnoremap <silent> <C-space> <C-\><C-n>:RnvimrResize<CR>
+    nnoremap <silent> <c-n> :RnvimrToggle<CR>
+    tnoremap <silent> <c-n> <C-\><C-n>:RnvimrToggle<CR>
+    let g:rnvimr_hide_gitignore = 1
+    let g:rnvimr_enable_ex = 1       
+    let g:rnvimr_enable_picker = 1
+    let g:rnvimr_enable_bw = 1
+    highlight link RnvimrNormal CursorLine
+endif
