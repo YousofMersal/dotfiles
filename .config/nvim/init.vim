@@ -34,6 +34,9 @@ if has('nvim-0.5')
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
+    Plug 'kyazdani42/nvim-web-devicons'
+    Plug 'folke/trouble.nvim'
+    Plug 'folke/todo-comments.nvim'
 
     " cheatseat and note taking
     Plug 'sudormrfbin/cheatsheet.nvim'
@@ -438,9 +441,9 @@ nmap <leader>m <Plug>MarkdownPreviewToggle
 let g:mkdp_browser = 'firefox'
 let g:mkdp_auto_start = 0
 
-" ================
+" ===================
 " === nvim-ranger ===
-" ================ 
+" ===================
 if has('nvim-0.5')
     tnoremap <silent> <C-space> <C-\><C-n>:RnvimrResize<CR>
     nnoremap <silent> <c-n> :RnvimrToggle<CR>
@@ -451,3 +454,21 @@ if has('nvim-0.5')
     let g:rnvimr_enable_bw = 1
     highlight link RnvimrNormal CursorLine
 endif
+
+" ===================
+" === Lua section ===
+" ===================
+lua << EOF
+  require("trouble").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
+lua << EOF
+  require("todo-comments").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+  }
+EOF
