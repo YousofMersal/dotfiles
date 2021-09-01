@@ -124,6 +124,8 @@ fi
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
+alias fzfp="fzf --preview 'bat {-1} --color=always'"
+alias cat="bat"
 alias ols="\\ls"
 alias pip="pip3"
 alias ls="exa"
