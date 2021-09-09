@@ -187,8 +187,13 @@ myKeys conf@XConfig {XMonad.modMask = modm} = M.fromList $
 
     ,((modm .|. shiftMask, xK_KP_End), spawn "lutris lutris:rungameid/1")
 
+    ,((modm .|. shiftMask, xK_KP_Down), spawn "steam steam://rungameid/427520")
+
     ,((modm .|. shiftMask,  xK_F6), spawn "~/.xmonad/scripts/swith_audio_output.sh")
 
+    ,((modm .|. shiftMask,  xK_Escape), spawn "systemctl suspend")
+
+    ,((modm .|. shiftMask, xK_period), spawn "emoji-menu -t")
     -- Media keys
     , ((0 , 0x1008FF14), spawn "mpris2controller PlayPause")
     , ((0 , 0x1008FF15), spawn "mpris2controller PlayPause")
