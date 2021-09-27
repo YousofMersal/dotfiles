@@ -148,6 +148,7 @@ export PATH=/usr/local/texlive/2020/bin/x86_64-linux:$PATH
 export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 #Make Latex folder invisible
 export TEXMFHOME=$HOME/.texmf
+export PATH=$PATH:/usr/local/go/bin
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -204,3 +205,4 @@ export SDKMAN_DIR="/home/yousof/.sdkman"
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
+export GPG_TTY=$(tty) 
