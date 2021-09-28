@@ -148,7 +148,11 @@ export PATH=/usr/local/texlive/2020/bin/x86_64-linux:$PATH
 export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 #Make Latex folder invisible
 export TEXMFHOME=$HOME/.texmf
+<<<<<<< HEAD
 export MONITOR=eDP
+=======
+export PATH=$PATH:/usr/local/go/bin
+>>>>>>> 5aa4bd4375e7c89eb075aa5951cdc6c760235157
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -205,9 +209,13 @@ export SDKMAN_DIR="/home/yousof/.sdkman"
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
+<<<<<<< HEAD
 
 PATH="/home/yousof/perl5/bin${PATH:+:${PATH}}"; export PATH;
 PERL5LIB="/home/yousof/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
 PERL_LOCAL_LIB_ROOT="/home/yousof/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
 PERL_MB_OPT="--install_base \"/home/yousof/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/yousof/perl5"; export PERL_MM_OPT;
+=======
+export GPG_TTY=$(tty) 
+>>>>>>> 5aa4bd4375e7c89eb075aa5951cdc6c760235157
