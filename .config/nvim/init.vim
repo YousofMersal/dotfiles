@@ -37,6 +37,16 @@ if has('nvim-0.5')
     Plug 'kyazdani42/nvim-web-devicons'
     Plug 'folke/trouble.nvim'
     Plug 'folke/todo-comments.nvim'
+    Plug 'folke/lsp-colors.nvim'
+    Plug 'hoob3rt/lualine.nvim'
+    Plug 'marko-cerovac/material.nvim'
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'nvim-lua/lsp_extensions.nvim'
+    Plug 'nvim-lua/completion-nvim'
+    Plug 'glepnir/lspsaga.nvim'
+    Plug 'hrsh7th/nvim-cmp'
+    Plug 'mfussenegger/nvim-dap'
+    Plug 'simrat39/rust-tools.nvim'
 
     " cheatseat and note taking
     Plug 'sudormrfbin/cheatsheet.nvim'
@@ -62,11 +72,11 @@ Plug 'ap/vim-css-color', { 'for': 'css'}
 Plug 'lervag/vimtex', {'for': 'tex'} 
 
 " airline
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'dawikur/base16-vim-airline-themes', {'do': 'bash ./after.sh'}
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
+"Plug 'dawikur/base16-vim-airline-themes', {'do': 'bash ./after.sh'}
 
-Plug 'kaicataldo/material.vim', {'for': 'hs', 'branch': 'main' }
+"Plug 'kaicataldo/material.vim', {'for': 'hs', 'branch': 'main' }
 
 " Any valid git URL is allowed
 Plug 'https://github.com/junegunn/vim-github-dashboard.git'
@@ -79,7 +89,7 @@ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 
 " Theme
-Plug 'chriskempson/base16-vim'
+"Plug 'chriskempson/base16-vim'
 
 " git plugin
 Plug 'tpope/vim-fugitive'
@@ -91,7 +101,6 @@ Plug 'Shirk/vim-gas', { 'for': 's' }
 
 " Haskell
 Plug 'autozimu/LanguageClient-neovim', {
-    \ 'for': ['haskell'],
     \ 'branch': 'next',
     \ 'do': 'bash install.sh'
     \ }
@@ -120,6 +129,9 @@ nnoremap <SPACE> <Nop>
 let mapleader=" "
 let maplocalleader=" "
 
+
+
+
 " ===================
 " == Theme Config ===
 " ===================
@@ -132,17 +144,17 @@ if (has('termguicolors'))
     set termguicolors
 endif
 
-if filereadable(expand("~/.vimrc_background"))
-  source ~/.vimrc_background
-endif
+"if filereadable(expand("~/.vimrc_background"))
+" source ~/.vimrc_background
+"endif
 
 " haskell theming
-let g:material_terminal_italics=1
-let g:material_theme_style = 'darker'
-au BufRead,BufNewFile *.hs colorscheme material
+"let g:material_terminal_italics=1
+"let g:material_theme_style = 'darker'
+"au BufRead,BufNewFile *.hs colorscheme material
 
 " === Airline ===
-let g:airline_theme='base16_material_darker'
+"let g:airline_theme='base16_material_darker'
 let g:airline_experimental = 0
 
 " ===================
@@ -207,7 +219,6 @@ autocmd InsertLeave * set nopaste
 
 " syntax
 "au BufRead,BufNewFile *.s set filetype=gas"
-
 "================
 "====Keybinds====
 "================
@@ -235,6 +246,11 @@ map H ^
 map L $
 
 set pastetoggle=<F3>
+" ======================
+" === LanguageClient ===
+"=======================
+let g:LanguageClient_rootMarkers = ['*.cabal', 'stack.yaml']
+let g:LanguageClient_serverCommands = { 'haskell': ['haskell-language-server-wrapper', '--lsp'] }
 
 " ====================
 " === coc settings ===
@@ -244,8 +260,8 @@ function! s:cocActionsOpenFromSelected(type) abort
   execute 'CocCommand actions.open ' . a:type
 endfunction
 
-"xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
-"nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
+xmap <silent> <leader>a :<C-u>execute 'CocCommand actions.open ' . visualmode()<CR>
+nmap <silent> <leader>a :<C-u>set operatorfunc=<SID>cocActionsOpenFromSelected<CR>g@
 vmap <leader>. <Plug>(coc-codeaction-selected)
 nmap <leader>. <Plug>(coc-codeaction-selected)
 
@@ -266,7 +282,7 @@ inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
             \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+"set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 function! StatusDiagnostic() abort
     let info = get(b:, 'coc_diagnostic_info', {})
@@ -307,21 +323,21 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
 
-" NeoVim-only mapping for visual mode scroll
-" Useful on signatureHelp after jump placeholder of snippet expansion
+"NeoVim-only mapping for visual mode scroll
+"Useful on signatureHelp after jump placeholder of snippet expansion
 if has('nvim')
   vnoremap <nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#nvim_scroll(1, 1) : "\<C-f>"
   vnoremap <nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#nvim_scroll(0, 1) : "\<C-b>"
 endif
 
-" Use <c-space> to trigger completion.
+"Use <c-space> to trigger completion.
 if has('nvim')
   inoremap <silent><expr> <c-space> coc#refresh()
 else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
-" Use K to show documentation in preview window.
+"Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
 function! s:show_documentation()
@@ -375,8 +391,6 @@ endif
 "=============== 
 "=== Haskell ===
 "===============
-let g:LanguageClient_rootMarkers = ['*.cabal', 'stack.yaml']
-let g:LanguageClient_serverCommands = { 'haskell': ['haskell-language-server-wrapper', '--lsp'] }
 
 "================================
 "=== Spell Checker / texidote ===
@@ -455,20 +469,145 @@ if has('nvim-0.5')
     highlight link RnvimrNormal CursorLine
 endif
 
+
+
+
+" new stuff to make work later
+
 " ===================
 " === Lua section ===
 " ===================
 lua << EOF
-  require("trouble").setup {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
-  }
+require('material').setup()
+vim.g.material_style = "darker"
+require('lualine').setup {
+    options = {
+        theme = 'material-nvim'
+        }
+    }
+require('rust-tools').setup({})
+
+--require("trouble").setup {
+--    -- your configuration comes here
+--    -- or leave it empty to use the default settings
+--    -- refer to the configuration section below
+--    }
+--require("todo-comments").setup {
+--    -- your configuration comes here
+--    -- or leave it empty to use the default settings
+--    -- refer to the configuration section below
+--    }
+
+--===========
+-- Lsp server
+-- ==========
+--local nvim_lsp = require('lspconfig')
+--local on_attach = function(client, bufnr)
+--  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+--  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+--  -- Enable completion triggered by <c-x><c-o>
+--  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+--  -- Mappings.
+--  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+--buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+--buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+--buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+--buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+--  buf_set_keymap('n', '<M-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+--buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+--buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+--buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+--buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+--  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+--buf_set_keymap('n', '<space>.w', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+--buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+--buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+--buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+--buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+--buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+--buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+
+  -- Forward to other plugins
+--  require'completion'.on_attach(client)
+--  end
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+--local servers = { 'pyright', 'rust_analyzer', 'tsserver' }
+--for _, lsp in ipairs(servers) do
+--  nvim_lsp[lsp].setup {
+--    on_attach = on_attach,
+--    flags = {
+--      debounce_text_changes = 150,
+--    }
+--  }
+--end
+--vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+--  vim.lsp.diagnostic.on_publish_diagnostics, {
+--    virtual_text = true,
+--    signs = true,
+--    update_in_insert = true,
+--  }
+--)
+
+--local saga = require 'lspsaga'
+--saga.init_lsp_saga {
+--  your custom option here
+--}
+--saga.init_lsp_saga()
+
+--  local cmp = require'cmp'
+--  cmp.setup({
+--    snippet = {
+--      expand = function(args)
+--        vim.fn["vsnip#anonymous"](args.body)
+--      end,
+--    },
+--    mapping = {
+--      ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+--    },
+--    sources = {
+--      { name = '...' },
+--      ...
+--    }
+--  })
+
 EOF
-lua << EOF
-  require("todo-comments").setup {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
-  }
-EOF
+
+"nnoremap <silent>K :Lspsaga hover_doc<CR>
+" scroll down hover doc or scroll in definition preview
+"nnoremap <silent> <C-f> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(1)<CR>
+" scroll up hover doc
+"nnoremap <silent> <C-b> <cmd>lua require('lspsaga.action').smart_scroll_with_saga(-1)<CR>
+"nnoremap <silent><leader>.w :Lspsaga code_action<CR>
+"vnoremap <silent><leader>.w :<C-U>Lspsaga range_code_action<CR>
+"nnoremap <silent> gh :Lspsaga lsp_finder<CR>
+"nnoremap <silent>gr :Lspsaga rename<CR>
+
+
+
+" Completion
+" Better completion
+" menuone: popup even when there's only one match
+" noinsert: Do not insert text until a selection is made
+" noselect: Do not select, force user to select one from the menu
+"set completeopt=menuone,noinsert,noselect
+" Better display for messages
+"set cmdheight=2
+" You will have bad experience for diagnostic messages when it's default 4000.
+"set updatetime=300
+" Use <Tab> and <S-Tab> to navigate through popup menu
+"inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+"inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" use <Tab> as trigger keys
+"imap <Tab> <Plug>(completion_smart_tab)
+"imap <S-Tab> <Plug>(completion_smart_s_tab)
+
+" Enable type inlay hints
+"autocmd CursorHold,CursorHoldI *.rs :lua require'lsp_extensions'.inlay_hints{ only_current_line = true }
+
+colorscheme material
