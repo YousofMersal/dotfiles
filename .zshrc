@@ -83,7 +83,6 @@ plugins=(
     rustup
     cargo
     fzf
-    nnn
     autojump
 )
 
@@ -140,6 +139,7 @@ alias clip="xclip -selection clipboard"
 alias clipv="xclip -selection clipboard -o"
 alias timeit="hyperfine"
 alias nn="$HOME/n/bin/n"
+alias ddu="( cd ~/docker ; sudo docker-compose down && sudo docker-compose up -d)"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
@@ -148,7 +148,11 @@ export PATH=/usr/local/texlive/2020/bin/x86_64-linux:$PATH
 export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 #Make Latex folder invisible
 export TEXMFHOME=$HOME/.texmf
+<<<<<<< HEAD
+export MONITOR=eDP
+=======
 export PATH=$PATH:/usr/local/go/bin
+>>>>>>> 5aa4bd4375e7c89eb075aa5951cdc6c760235157
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -170,7 +174,7 @@ _fzf_compgen_dir() {
 
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 eval "$(zoxide init zsh)"
-n ()
+nnnn ()
 {
     # Block nesting of nnn in subshells
     if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
@@ -205,4 +209,13 @@ export SDKMAN_DIR="/home/yousof/.sdkman"
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
+<<<<<<< HEAD
+
+PATH="/home/yousof/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/yousof/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/yousof/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/yousof/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/yousof/perl5"; export PERL_MM_OPT;
+=======
 export GPG_TTY=$(tty) 
+>>>>>>> 5aa4bd4375e7c89eb075aa5951cdc6c760235157
