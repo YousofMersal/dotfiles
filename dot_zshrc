@@ -83,7 +83,6 @@ plugins=(
     rustup
     cargo
     fzf
-    nnn
     autojump
 )
 
@@ -94,7 +93,7 @@ source $ZSH/oh-my-zsh.sh
 #NNN
 export GUI=1
 export TERMINAL=kitty
-export NNN_PLUG='j:autojump;p:preview-tui-ext;u:preview-tui'
+export NNN_PLUG='j:autojump;p:preview-tui-ext;f:fzopen'
 BLK="04" CHR="04" DIR="04" EXE="00" REG="00" HARDLINK="00" SYMLINK="06" MISSING="00" ORPHAN="01" FIFO="0F" SOCK="0F" OTHER="02"
 export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
 #export NNN_OPENER=/home/yousof/.config/nnn/plugins/nuke
@@ -115,6 +114,7 @@ export ICONLOOKUP=1
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
+# chech for WSL
 if grep -qEi "(Microsoft|WSL)" /proc/version &> /dev/null ; then
     export DISPLAY=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null):0
     export LIBGL_ALWAYS_INDIRECT=1
@@ -123,12 +123,13 @@ fi
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
+alias fzfp="fzf --preview 'bat {-1} --color=always'"
+alias cat="bat"
 alias ols="\\ls"
 alias pip="pip3"
 alias ls="exa"
 alias lst="exa --git-ignore -T"
 alias v="nvim"
-alias vim="nvim"
 alias ya="yadm add"
 alias ycmsg="yadm commit -m"
 alias yp="yadm push"
@@ -138,6 +139,7 @@ alias clip="xclip -selection clipboard"
 alias clipv="xclip -selection clipboard -o"
 alias timeit="hyperfine"
 alias nn="$HOME/n/bin/n"
+alias ddu="( cd ~/docker ; sudo docker-compose down && sudo docker-compose up -d)"
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
@@ -146,21 +148,29 @@ export PATH=/usr/local/texlive/2020/bin/x86_64-linux:$PATH
 export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 #Make Latex folder invisible
 export TEXMFHOME=$HOME/.texmf
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="/home/yousof/.sdkman"
-[[ -s "/home/yousof/.sdkman/bin/sdkman-init.sh" ]] && source "/home/yousof/.sdkman/bin/sdkman-init.sh"
+export PATH=$PATH:/usr/local/go/bin
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+#fzf settings
+jd() {
+  preview="git diff $@ --color=always -- {-1}"
+  git diff $@ --name-only | fzf --bind 'ctrl-f:preview-up,ctrl-b:preview-down'  -m --ansi --preview $preview
+}
 
+_fzf_compgen_path() {
+  fd --hidden --follow --exclude ".git" . "$1"
+}
+_fzf_compgen_dir() {
+  fd --type d --hidden --follow --exclude ".git" . "$1"
+}
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 [ -f "/home/yousof/.ghcup/env" ] && source "/home/yousof/.ghcup/env" # ghcup-env
 
 export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
-
-n ()
+eval "$(zoxide init zsh)"
+nnnn ()
 {
     # Block nesting of nnn in subshells
     if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
@@ -187,3 +197,12 @@ n ()
             rm -f "$NNN_TMPFILE" > /dev/null
     fi
 }
+source ~/ghcPkgUtils.sh
+
+export SDKMAN_DIR="/home/yousof/.sdkman"
+[[ -s "/home/yousof/.sdkman/bin/sdkman-init.sh" ]] && source "/home/yousof/.sdkman/bin/sdkman-init.sh"
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
+
+export GPG_TTY=$(tty) 
