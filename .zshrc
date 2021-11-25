@@ -149,6 +149,7 @@ export PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 #Make Latex folder invisible
 export TEXMFHOME=$HOME/.texmf
 export PATH=$PATH:/usr/local/go/bin
+export RUSTC_WRAPPER=sccache
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
