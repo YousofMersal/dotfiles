@@ -254,7 +254,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = smartBorders $ avoidStruts ( tiled ||| Mirror tiled ||| noBorders (fullscreenFull Full) )
+myLayout = lessBorders Screen $ avoidStruts ( tiled ||| Mirror tiled ||| noBorders (fullscreenFull Full) )
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   =  space $ Tall nmaster delta ratio
@@ -325,7 +325,7 @@ myLogHook = return ()
 myStartupHook = do
     spawnOnce "wired &"
     spawnOnce "nitrogen --restore &"
-    spawnOnce "picom &"
+    spawnOnce "picom -b --experimental-backends --config ~/.config/picom/picom.conf &"
     --spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --monitor 1 --transparent true --alpha 0 --tint 0x282c34  --height 22 &"
     --return kdeConfig
 
