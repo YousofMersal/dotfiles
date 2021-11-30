@@ -66,6 +66,9 @@ if has('nvim-0.5')
     Plug 'kevinhwang91/rnvimr'
 end
 
+
+
+
 Plug 'preservim/nerdcommenter'
 
 Plug 'justinmk/vim-sneak'
@@ -138,7 +141,7 @@ Plug 'ryanoasis/vim-devicons'
 Plug  'neovimhaskell/haskell-vim', 
 
 Plug 'mcchrish/nnn.vim'
-" Initialize pluginsystem
+" Initialize plugin system
 call plug#end()
 " ----------------------------------------------------------------------------------------
 " set guifont=FiraCode\ Nerd\ Font 
@@ -378,7 +381,7 @@ let g:nnn#action = {
 "=========================
 " === misc plugin setup ==
 " ========================
-let g:UltiSnipsExpandTrigger = '<f5>'
+let g:UltiSnipsExpandTrigger = '<C-tab>'
 
 let g:mkdp_auto_start = 1
 let g:mkdp_auto_close = 1
@@ -536,18 +539,41 @@ local on_attach = function(client, bufnr)
  -- Forward to other plugins
 --  require'completion'.on_attach(client)
   end
+
+-- get all installed servers
+
+local lsp_installer = require("nvim-lsp-installer")
+
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-local servers = { 'texlab' ,'pyright', 'rust_analyzer', 'tsserver', 'bashls' }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach,
-    flags = {
-      debounce_text_changes = 150,
-    }
-  }
-end
+
+local servers = { 'texlab' ,'pyright', 'rust_analyzer', 'tsserver', 'svelte',
+                    'jsonls', 'eslint', 'bashls','sumneko_lua' }
+
+lsp_installer.on_server_ready(function(server)
+    local opts = {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        flags = {
+            debounce_text_changes = 150,
+            }
+        }
+
+    server:setup(opts)
+end)
+
+--for _, lsp in ipairs(servers) do
+--      nvim_lsp[lsp].setup {
+--        capabilities = capabilities,
+--        on_attach = on_attach,
+--        flags = {
+--          debounce_text_changes = 150,
+--        }
+--      }
+--end
+
 --vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 --  vim.lsp.diagnostic.on_publish_diagnostics, {
 --    virtual_text = true,
@@ -764,4 +790,4 @@ nnoremap <silent> ;; <cmd>Telescope help_tags<cr>
 "autocmd CursorHold,CursorHoldI *.rs :lua require'lsp_extensions'.inlay_hints{ only_current_line = true }
 autocmd FileType toml lua require('cmp').setup.buffer { sources = { { name = 'crates' } } }
 
-colorscheme material 
+colorscheme material
