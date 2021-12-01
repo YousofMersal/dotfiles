@@ -14,6 +14,7 @@ import Control.Monad (forM_, join)
 import XMonad.Config.Kde
 
 --- Layouts and modifiers ---
+import XMonad.Layout.LayoutHints
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.Grid
 import XMonad.Layout.ResizableTile
@@ -26,6 +27,8 @@ import XMonad.Layout.NoBorders
 import qualified XMonad.Layout.ToggleLayouts as T (toggleLayouts, ToggleLayout(Toggle))
 import qualified XMonad.Layout.MultiToggle as MT (Toggle(..))
 import XMonad.Hooks.EwmhDesktops
+import XMonad.Util.Themes
+import XMonad.Layout.Tabbed
 
 --- misc ---
 import qualified XMonad.StackSet as W
@@ -253,11 +256,13 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList
 --
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
---
-myLayout = lessBorders Screen $ avoidStruts ( tiled ||| Mirror tiled ||| noBorders (fullscreenFull Full) )
+
+myBorders = lessBorders (Combine Union Screen OnlyFloat)
+-- lessBorders and Screen instead of smartBorders 
+myLayout = avoidStruts $ myBorders $ layoutHintsToCenter ( tiled ||| Mirror tiled ||| noBorders (fullscreenFull Full) ||| tab )
   where
      -- default tiling algorithm partitions the screen into two panes
-     tiled   =  space $ Tall nmaster delta ratio
+     tiled   = space $ Tall nmaster delta ratio
 
      -- The default number of windows in the master pane
      nmaster = 1
@@ -266,7 +271,9 @@ myLayout = lessBorders Screen $ avoidStruts ( tiled ||| Mirror tiled ||| noBorde
      ratio   = 1/2
 
      -- Percent of screen to increment by when resizing panes
-     delta   = 3/100
+     delta   = 5/100
+
+     tab = tabbed shrinkText (theme smallClean)
 
      -- spacing
      space = spacingRaw True (Border 0 5 5 5) True (Border 5 5 5 5) True
@@ -325,7 +332,7 @@ myLogHook = return ()
 myStartupHook = do
     spawnOnce "wired &"
     spawnOnce "nitrogen --restore &"
-    spawnOnce "picom -b --experimental-backends --config ~/.config/picom/picom.conf &"
+    spawnOnce "picom -b --config ~/.config/picom/picom.conf &"
     --spawnOnce "trayer --edge top --align right --widthtype request --padding 6 --SetDockType true --SetPartialStrut true --expand true --monitor 1 --transparent true --alpha 0 --tint 0x282c34  --height 22 &"
     --return kdeConfig
 
