@@ -1,4 +1,3 @@
--- Imports --
 import XMonad
 import Data.Monoid
 import System.Exit
