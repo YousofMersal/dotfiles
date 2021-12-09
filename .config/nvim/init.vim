@@ -30,6 +30,7 @@ endif
 if has('nvim-0.5')
     "telescope and popup
     Plug 'hrsh7th/vim-vsnip'
+    Plug 'rmagatti/auto-session'
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim'
@@ -65,6 +66,9 @@ if has('nvim-0.5')
     " file explorer
     Plug 'kevinhwang91/rnvimr'
 end
+
+
+
 
 Plug 'preservim/nerdcommenter'
 
@@ -378,7 +382,7 @@ let g:nnn#action = {
 "=========================
 " === misc plugin setup ==
 " ========================
-let g:UltiSnipsExpandTrigger = '<f5>'
+let g:UltiSnipsExpandTrigger = '<C-tab>'
 
 let g:mkdp_auto_start = 1
 let g:mkdp_auto_close = 1
@@ -500,6 +504,10 @@ endif
 
 
 lua << EOF
+require('auto-session').setup {
+        log_level = 'info',
+        auto_session_suppress_dirs = {'~/', '~/Projects'}
+    }
 local nvim_lsp = require('lspconfig')
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -536,18 +544,41 @@ local on_attach = function(client, bufnr)
  -- Forward to other plugins
 --  require'completion'.on_attach(client)
   end
+
+-- get all installed servers
+
+local lsp_installer = require("nvim-lsp-installer")
+
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
-local servers = { 'texlab' ,'pyright', 'rust_analyzer', 'tsserver', 'bashls' }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach,
-    flags = {
-      debounce_text_changes = 150,
-    }
-  }
-end
+
+local servers = { 'texlab' ,'pyright', 'rust_analyzer', 'tsserver', 'svelte',
+                    'jsonls', 'eslint', 'bashls','sumneko_lua' }
+
+lsp_installer.on_server_ready(function(server)
+    local opts = {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        flags = {
+            debounce_text_changes = 150,
+            }
+        }
+
+    server:setup(opts)
+end)
+
+--for _, lsp in ipairs(servers) do
+--      nvim_lsp[lsp].setup {
+--        capabilities = capabilities,
+--        on_attach = on_attach,
+--        flags = {
+--          debounce_text_changes = 150,
+--        }
+--      }
+--end
+
 --vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 --  vim.lsp.diagnostic.on_publish_diagnostics, {
 --    virtual_text = true,
