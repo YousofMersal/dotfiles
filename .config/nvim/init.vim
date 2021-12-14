@@ -560,7 +560,6 @@ lsp_installer.on_server_ready(function(server)
             debounce_text_changes = 150,
             }
         }
-
     server:setup(opts)
 end)
 
@@ -686,6 +685,7 @@ local opts = {
 
 require'lspconfig'.bashls.setup{}
 require('rust-tools').setup(opts)
+require('crates').setup()
 saga = require 'lspsaga'
 saga.init_lsp_saga()
 EOF
