@@ -61,7 +61,6 @@ if has('nvim-0.5')
 
     " cheatseat and note taking
     Plug 'sudormrfbin/cheatsheet.nvim'
-    Plug 'oberblastmeister/neuron.nvim'
     " file explorer
     Plug 'kevinhwang91/rnvimr'
 end
@@ -634,12 +633,14 @@ require("trouble").setup {
     -- or leave it empty to use the default settings
     -- refer to the configuration section below
     }
---require("todo-comments").setup {
---    -- your configuration comes here
---    -- or leave it empty to use the default settings
---    -- refer to the configuration section below
---    }
+require("todo-comments").setup {
+    -- your configuration comes here
+    -- or leave it empty to use the default settings
+    -- refer to the configuration section below
+    }
 
+
+require("lsp-colors").setup()
 --===========
 -- Lsp server
 -- ==========
