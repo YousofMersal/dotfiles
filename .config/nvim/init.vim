@@ -47,6 +47,9 @@ if has('nvim-0.5')
     Plug 'saecki/crates.nvim'
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
     Plug 'williamboman/nvim-lsp-installer'
+    Plug 'hood/popui.nvim'
+    Plug 'RishabhRD/popfix'
+    Plug 'windwp/nvim-autopairs'
 
     " Autocompletion framework
     Plug 'hrsh7th/nvim-cmp'
@@ -502,6 +505,7 @@ endif
 
 
 lua << EOF
+--vim.ui.select = require"popui.ui-overrider"
 local nvim_lsp = require('lspconfig')
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -579,6 +583,16 @@ end)
 --    update_in_insert = true,
 --  }
 --)
+local npairs = require("nvim-autopairs")
+
+npairs.setup({
+    check_ts = true,
+    ts_config = {
+        lua = {'string'},-- it will not add a pair on that treesitter node
+        javascript = {'template_string'},
+        java = false,-- don't check treesitter on java
+    }
+})
 
 EOF
 
@@ -693,7 +707,7 @@ EOF
 
 " Code navigation shortcuts
 " as found in :help lsp
-nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> <leader> gd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
 nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
@@ -752,6 +766,9 @@ cmp.setup({
     { name = 'buffer' },
   },
 })
+
+vim.api.nvim_set_keymap('n', '<Leader>td', ':TodoTelescope<CR>', {noremap = true})
+vim.api.nvim_set_keymap('n', '<Leader>tt', ':TodoTrouble<CR>', {noremap = true})
 EOF
 
 " Completion
