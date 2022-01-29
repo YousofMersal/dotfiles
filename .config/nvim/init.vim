@@ -29,6 +29,7 @@ endif
 " requires neovim 5
 if has('nvim-0.5')
     "telescope and popup
+    Plug 'NoahTheDuke/vim-just'
     Plug 'hrsh7th/vim-vsnip'
     Plug 'nvim-lua/popup.nvim'
     Plug 'nvim-lua/plenary.nvim'
@@ -39,6 +40,7 @@ if has('nvim-0.5')
     Plug 'folke/lsp-colors.nvim'
     Plug 'hoob3rt/lualine.nvim'
     Plug 'marko-cerovac/material.nvim'
+    Plug 'olimorris/onedarkpro.nvim'
     Plug 'neovim/nvim-lspconfig'
     Plug 'nvim-lua/lsp_extensions.nvim'
     Plug 'tami5/lspsaga.nvim'
@@ -171,10 +173,6 @@ endif
 "let g:material_terminal_italics=1
 "let g:material_theme_style = 'darker'
 "au BufRead,BufNewFile *.hs colorscheme material
-
-" === Airline ===
-"let g:airline_theme='base16_material_darker'
-let g:airline_experimental = 0
 
 " ===================
 " === Rust Config ===
@@ -505,6 +503,7 @@ endif
 
 
 lua << EOF
+require('onedarkpro').load()
 --vim.ui.select = require"popui.ui-overrider"
 local nvim_lsp = require('lspconfig')
 -- Use an on_attach function to only map the following keys
@@ -587,11 +586,6 @@ local npairs = require("nvim-autopairs")
 
 npairs.setup({
     check_ts = true,
-    ts_config = {
-        lua = {'string'},-- it will not add a pair on that treesitter node
-        javascript = {'template_string'},
-        java = false,-- don't check treesitter on java
-    }
 })
 
 EOF
@@ -608,38 +602,38 @@ require'nvim-treesitter.configs'.setup {
 }
 require('lualine').setup({
     options = {
-        theme = "material-nvim"
+        theme = "onedark"
     }
 })
 vim.g.material_style = "darker"
 
-require('material').setup({
-    contrast = true, -- Enable contrast for sidebars, floating windows and popup menus like Nvim-Tree
-    borders = false, -- Enable borders between verticaly split windows
-    popup_menu = "dark", -- Popup menu style ( can be: 'dark', 'light', 'colorful' or 'stealth' )
-    italics = {
-        comments = true, -- Enable italic comments
-        keywords = false, -- Enable italic keywords
-        functions = false, -- Enable italic functions
-        strings = false, -- Enable italic strings
-        variables = false -- Enable italic variables
-    },
-    contrast_windows = { -- Specify which windows get the contrasted (darker) background
-        --"terminal", -- Darker terminal background
-        "packer", -- Darker packer background
-        "qf" -- Darker qf list background
-    },
-    text_contrast = {
-        lighter = false, -- Enable higher contrast text for lighter style
-        darker = false -- Enable higher contrast text for darker style
-    },
-    disable = {
-        background = false, -- Prevent the theme from setting the background (NeoVim then uses your teminal background)
-        term_colors = false, -- Prevent the theme from setting terminal colors
-        eob_lines = false -- Hide the end-of-buffer lines
-    },
-    custom_highlights = {} -- Overwrite highlights with your own
-})
+--require('material').setup({
+--    contrast = true, -- Enable contrast for sidebars, floating windows and popup menus like Nvim-Tree
+--    borders = false, -- Enable borders between verticaly split windows
+--    popup_menu = "dark", -- Popup menu style ( can be: 'dark', 'light', 'colorful' or 'stealth' )
+--    italics = {
+--        comments = true, -- Enable italic comments
+--        keywords = false, -- Enable italic keywords
+--        functions = false, -- Enable italic functions
+--        strings = false, -- Enable italic strings
+--        variables = false -- Enable italic variables
+--    },
+--    contrast_windows = { -- Specify which windows get the contrasted (darker) background
+--        --"terminal", -- Darker terminal background
+--        "packer", -- Darker packer background
+--        "qf" -- Darker qf list background
+--    },
+--    text_contrast = {
+--        lighter = false, -- Enable higher contrast text for lighter style
+--        darker = false -- Enable higher contrast text for darker style
+--    },
+--    disable = {
+--        background = false, -- Prevent the theme from setting the background (NeoVim then uses your teminal background)
+--        term_colors = false, -- Prevent the theme from setting terminal colors
+--        eob_lines = false -- Hide the end-of-buffer lines
+--    },
+--    custom_highlights = {} -- Overwrite highlights with your own
+--})
 
 
 require("trouble").setup {
@@ -808,4 +802,4 @@ nnoremap <silent> ;; <cmd>Telescope help_tags<cr>
 "autocmd CursorHold,CursorHoldI *.rs :lua require'lsp_extensions'.inlay_hints{ only_current_line = true }
 autocmd FileType toml lua require('cmp').setup.buffer { sources = { { name = 'crates' } } }
 
-colorscheme material
+"colorscheme material
